@@ -1,0 +1,20 @@
+# CMakeLists.txt
+# By Sebastian Raaphorst, 2018.
+cmake_minimum_required(VERSION 3.10)
+project(graphmaze)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+
+# Find includes in corresponding build directories.
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+find_package(Boost 1.67 COMPONENTS serialization REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
+#if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+#    add_definitions(-DDEBUG)
+#endif()
+message("Starting compilation...")
+add_executable(main main.cpp)
+target_link_libraries(main)
