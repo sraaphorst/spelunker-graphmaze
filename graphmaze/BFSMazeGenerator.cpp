@@ -23,7 +23,7 @@ namespace spelunker::graphmaze {
         UnvisitedVertices unvisited = initializeUnvisitedVertices(tmplt);
 
         std::stack<vertex> stack;
-        stack.push(0);
+        stack.push(randomStartVertex(out));
         while (!stack.empty()) {
             const auto start = stack.top();
             unvisited[start] = false;

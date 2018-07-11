@@ -36,6 +36,7 @@ int main() {
             std::cout << "Added vertex " << v << "(" << x << ", " << y << ")" << std::endl;
         }
 
+    // Create the torus.
     for (auto[viter, vend] = boost::vertices(g); viter != vend; ++viter) {
         // Add all four directions.
         const auto v = *viter;
@@ -54,12 +55,8 @@ int main() {
         boost::add_edge(v, yp1, g);
     }
 
-    std::cout << "******** PRODUCING MAZE ********" << std::endl;
-
     BFSMazeGenerator rng(W, H);
     const auto maze = rng.generate(g);
-
-    std::cout << "***** DONE *****" << std::endl;
 
     for (auto[viter, vend] = boost::vertices(maze); viter != vend; ++viter)
         std::cout << "Vertex " << *viter << std::endl;

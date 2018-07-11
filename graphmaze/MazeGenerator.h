@@ -33,6 +33,9 @@ namespace spelunker::graphmaze {
         MazeGraph createInitialMaze(const MazeGraph &tmplt) const noexcept;
 
         UnvisitedVertices initializeUnvisitedVertices(const MazeGraph &tmplt) const noexcept;
+
+        vertex randomStartVertex(const MazeGraph &maze) const noexcept;
+
     private:
         const int width;
         const int height;

@@ -26,4 +26,9 @@ namespace spelunker::graphmaze {
             unvisited[*vIter] = true;
         return unvisited;
     }
+
+    // TODO: Fix this up.
+    vertex MazeGenerator::randomStartVertex(const MazeGraph &maze) const noexcept {
+        return 0;
+    }
 }
