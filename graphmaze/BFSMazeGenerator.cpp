@@ -16,17 +16,16 @@
 namespace spelunker::graphmaze {
 
     const MazeGraph BFSMazeGenerator::generate(const MazeGraph &tmplt) const {
-        MazeGraph out = GraphUtils::createInitialMaze(tmplt);
-        UnvisitedVertices unvisited = GraphUtils::initializeUnvisitedVertices(tmplt);
+        MazeSeed seed = GraphUtils::makeSeed(tmplt);
 
         std::stack<vertex> stack;
-        stack.push(GraphUtils::randomStartVertex(out));
+        stack.push(GraphUtils::randomStartVertex(seed.maze));
         while (!stack.empty()) {
             const auto start = stack.top();
-            unvisited[start] = false;
+            seed.unvisited[start] = false;
 
             // Find the list of unvisited neighbours to start.
-            const auto uNbrs = GraphUtils::unvisitedNeighbours(tmplt, unvisited, start);
+            const auto uNbrs = GraphUtils::unvisitedNeighbours(seed, start);
             if (uNbrs.empty()) {
                 stack.pop();
                 continue;
@@ -38,12 +37,12 @@ namespace spelunker::graphmaze {
             const auto nxt = uNbrs[idx];
 
             // Add the wall from start to nxt to the output maze.
-            const auto [e, success] = boost::add_edge(start, nxt, out);
+            const auto [e, success] = boost::add_edge(start, nxt, seed.maze);
 
             // Enqueue nxt and loop.
             stack.push(nxt);
         }
 
-        return out;
+        return seed.maze;
     }
 }

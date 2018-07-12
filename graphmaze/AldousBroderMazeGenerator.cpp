@@ -21,34 +21,30 @@
 namespace spelunker::graphmaze {
 
     const MazeGraph AldousBroderMazeGenerator::generate(const MazeGraph &tmplt) const {
-        MazeGraph out = GraphUtils::createInitialMaze(tmplt);
-        UnvisitedVertices unvisited = GraphUtils::initializeUnvisitedVertices(tmplt);
-
-        // Keep track of the number of cells visited so that we know when to stop.
-        const auto nCells = GraphUtils::numCells(out);
+        MazeSeed seed = GraphUtils::makeSeed(tmplt);
 
         // Pick a random vertex to start.
-        auto v = GraphUtils::randomStartVertex(out);
+        auto v = GraphUtils::randomStartVertex(seed.maze);
         auto visitedCells = 1;
-        unvisited[v] = false;
+        seed.unvisited[v] = false;
 
         // Continue until we have visited all the cells.
-        while (visitedCells < nCells) {
+        while (visitedCells < seed.numVertices) {
             // Get all the neighbours of the current cell and move to one at random.
-            const auto nbrs = GraphUtils::neighbours(tmplt, v);
+            const auto nbrs = GraphUtils::neighbours(seed, v);
 
             // Select an unvisited neighbour at random.
             // TODO: Improve randomization.
             const int idx = rand() % nbrs.size();
             const auto nxt = nbrs[idx];
 
-            if (unvisited[nxt]) {
-                unvisited[nxt] = false;
+            if (seed.unvisited[nxt]) {
+                seed.unvisited[nxt] = false;
                 ++visitedCells;
-                boost::add_edge(v, nxt, out);
+                boost::add_edge(v, nxt, seed.maze);
             }
             v = nxt;
         }
-        return out;
+        return seed.maze;
     }
 }

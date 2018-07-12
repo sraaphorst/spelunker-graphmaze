@@ -54,11 +54,44 @@ namespace spelunker::graphmaze {
         return g;
     }
 
+    MazeSeed GraphUtils::makeSeed(const MazeGraph &tmplt) noexcept {
+        return MazeSeed {
+            tmplt,
+            createInitialMaze(tmplt),
+            numVertices(tmplt),
+            initializeUnvisitedVertices(tmplt)
+        };
+    }
+
     void GraphUtils::outputGraph(std::ostream &out, MazeGraph graph) {
         for (auto[viter, vend] = boost::vertices(graph); viter != vend; ++viter)
             std::cout << "Vertex " << *viter << std::endl;
         for (auto[eiter, eend] = boost::edges(graph); eiter != eend; ++eiter)
             std::cout << "Edge " << *eiter << std::endl;
+    }
+
+    // TODO: Fix this up.
+    vertex GraphUtils::randomStartVertex(const MazeGraph &maze) noexcept {
+        return 0;
+    }
+
+    VertexCollection GraphUtils::unvisitedNeighbours(const MazeSeed &seed, const vertex &v) {
+        VertexCollection unvisitedNeighbours;
+        for (auto [eiter, eEnd] = boost::out_edges(v, seed.tmplt); eiter != eEnd; ++eiter) {
+            const vertex t = boost::target(*eiter, seed.tmplt);
+            if (seed.unvisited.at(t))
+                unvisitedNeighbours.emplace_back(t);
+        }
+        return unvisitedNeighbours;
+    }
+
+    VertexCollection GraphUtils::neighbours(const MazeSeed &seed, const vertex &v) {
+        VertexCollection neighbours;
+        for (auto [eiter, eEnd] = boost::out_edges(v, seed.tmplt); eiter != eEnd; ++eiter) {
+            const auto t = boost::target(*eiter, seed.tmplt);
+            neighbours.emplace_back(t);
+        }
+        return neighbours;
     }
 
     MazeGraph GraphUtils::createInitialMaze(const MazeGraph &tmplt) noexcept {
@@ -75,33 +108,7 @@ namespace spelunker::graphmaze {
         return unvisited;
     }
 
-    // TODO: Fix this up.
-    vertex GraphUtils::randomStartVertex(const MazeGraph &maze) noexcept {
-        return 0;
-    }
-
-    VertexCollection GraphUtils::unvisitedNeighbours(const MazeGraph &tmplt,
-                                                        UnvisitedVertices &unvisited,
-                                                        const vertex &v) {
-        VertexCollection unvisitedNeighbours;
-        for (auto [eiter, eEnd] = boost::out_edges(v, tmplt); eiter != eEnd; ++eiter) {
-            const vertex t = boost::target(*eiter, tmplt);
-            if (unvisited[t])
-                unvisitedNeighbours.emplace_back(t);
-        }
-        return unvisitedNeighbours;
-    }
-
-    VertexCollection GraphUtils::neighbours(const MazeGraph &tmplt, const vertex &v) {
-        VertexCollection neighbours;
-        for (auto [eiter, eEnd] = boost::out_edges(v, tmplt); eiter != eEnd; ++eiter) {
-            const auto t = boost::target(*eiter, tmplt);
-            neighbours.emplace_back(t);
-        }
-        return neighbours;
-    }
-
-    int GraphUtils::numCells(const MazeGraph &maze) {
+    int GraphUtils::numVertices(const MazeGraph &maze) {
         auto [vIter, vEnd] = boost::vertices(maze);
         return std::distance(vIter, vEnd);
     }
