@@ -8,6 +8,8 @@
 
 #include <boost/graph/adjacency_list.hpp>
 
+#include <vector>
+
 namespace spelunker::graphmaze {
     /**
      * To represent a potential maze for building, we have vertices
@@ -21,4 +23,6 @@ namespace spelunker::graphmaze {
     /// Alias for vertices of MazeGraph.
     using vertex = MazeGraph::vertex_descriptor;
 
+    /// A collection of vertices.
+    using VertexCollection = std::vector<vertex>;
 }

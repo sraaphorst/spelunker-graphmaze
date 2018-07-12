@@ -1,6 +1,6 @@
 #include "graphmaze/MazeGraph.h"
 #include "graphmaze/MazeGenerator.h"
-#include "graphmaze/BFSMazeGenerator.h"
+#include "graphmaze/AldousBroderMazeGenerator.h"
 #include <cassert>
 #include <tuple>
 #include <vector>
@@ -55,9 +55,7 @@ int main() {
         boost::add_edge(v, yp1, g);
     }
 
-    BFSMazeGenerator rng(W, H);
-    const auto maze = rng.generate(g);
-
+    const auto maze = AldousBroderMazeGenerator{W, H}.generate(g);
     for (auto[viter, vend] = boost::vertices(maze); viter != vend; ++viter)
         std::cout << "Vertex " << *viter << std::endl;
     for (auto[eiter, eend] = boost::edges(maze); eiter != eend; ++eiter)

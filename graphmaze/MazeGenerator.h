@@ -30,11 +30,17 @@ namespace spelunker::graphmaze {
         virtual const MazeGraph generate(const MazeGraph &tplt) const = 0;
 
     protected:
-        MazeGraph createInitialMaze(const MazeGraph &tmplt) const noexcept;
+        static MazeGraph createInitialMaze(const MazeGraph &tmplt) noexcept;
 
-        UnvisitedVertices initializeUnvisitedVertices(const MazeGraph &tmplt) const noexcept;
+        static UnvisitedVertices initializeUnvisitedVertices(const MazeGraph &tmplt) noexcept;
 
-        vertex randomStartVertex(const MazeGraph &maze) const noexcept;
+        static vertex randomStartVertex(const MazeGraph &maze) noexcept;
+
+        static VertexCollection unvisitedNeighbours(const MazeGraph &tmplt, UnvisitedVertices &unvisited, const vertex &v);
+
+        static VertexCollection neighbours(const MazeGraph &tmplt, const vertex &v);
+
+        static int numCells(const MazeGraph &maze);
 
     private:
         const int width;
