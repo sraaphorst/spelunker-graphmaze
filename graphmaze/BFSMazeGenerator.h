@@ -17,7 +17,7 @@ namespace spelunker::graphmaze {
      */
     class BFSMazeGenerator : public MazeGenerator {
     public:
-        BFSMazeGenerator(int width, int height);
+        BFSMazeGenerator() = default;
 
         const MazeGraph generate(const MazeGraph &tmplt) const final;
     };

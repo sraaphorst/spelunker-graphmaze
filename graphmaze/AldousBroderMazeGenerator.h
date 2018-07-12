@@ -11,7 +11,7 @@
 namespace spelunker::graphmaze {
     class AldousBroderMazeGenerator : public MazeGenerator {
     public:
-        AldousBroderMazeGenerator(int width, int height);
+        AldousBroderMazeGenerator() = default;
 
         const MazeGraph generate(const MazeGraph &tmplt) const final;
     };

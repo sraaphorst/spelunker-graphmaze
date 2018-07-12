@@ -6,30 +6,27 @@
 
 #include <boost/graph/adjacency_list.hpp>
 
-#include <map>
 #include <stack>
-#include <vector>
 
+#include "GraphUtils.h"
 #include "MazeGraph.h"
 #include "MazeGenerator.h"
 #include "BFSMazeGenerator.h"
 
 namespace spelunker::graphmaze {
-    BFSMazeGenerator::BFSMazeGenerator(const int width, const int height)
-            : MazeGenerator{width, height} {}
 
     const MazeGraph BFSMazeGenerator::generate(const MazeGraph &tmplt) const {
-        MazeGraph out = createInitialMaze(tmplt);
-        UnvisitedVertices unvisited = initializeUnvisitedVertices(tmplt);
+        MazeGraph out = GraphUtils::createInitialMaze(tmplt);
+        UnvisitedVertices unvisited = GraphUtils::initializeUnvisitedVertices(tmplt);
 
         std::stack<vertex> stack;
-        stack.push(randomStartVertex(out));
+        stack.push(GraphUtils::randomStartVertex(out));
         while (!stack.empty()) {
             const auto start = stack.top();
             unvisited[start] = false;
 
             // Find the list of unvisited neighbours to start.
-            const auto uNbrs = unvisitedNeighbours(tmplt, unvisited, start);
+            const auto uNbrs = GraphUtils::unvisitedNeighbours(tmplt, unvisited, start);
             if (uNbrs.empty()) {
                 stack.pop();
                 continue;

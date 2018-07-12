@@ -8,6 +8,7 @@
 
 #include <boost/graph/adjacency_list.hpp>
 
+#include <map>
 #include <vector>
 
 namespace spelunker::graphmaze {
@@ -25,4 +26,7 @@ namespace spelunker::graphmaze {
 
     /// A collection of vertices.
     using VertexCollection = std::vector<vertex>;
+
+    /// A collection of unvisited vertices.
+    using UnvisitedVertices = std::map<vertex, bool>;
 }

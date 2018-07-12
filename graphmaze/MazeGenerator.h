@@ -18,9 +18,7 @@ namespace spelunker::graphmaze {
  */
     class MazeGenerator {
     public:
-        using UnvisitedVertices = std::map<vertex, bool>;
-
-        MazeGenerator(int w, int h);
+        MazeGenerator() = default;
 
         /**
          * Generate a maze using the given technique of size width by height.
@@ -28,22 +26,5 @@ namespace spelunker::graphmaze {
          * @return
          */
         virtual const MazeGraph generate(const MazeGraph &tplt) const = 0;
-
-    protected:
-        static MazeGraph createInitialMaze(const MazeGraph &tmplt) noexcept;
-
-        static UnvisitedVertices initializeUnvisitedVertices(const MazeGraph &tmplt) noexcept;
-
-        static vertex randomStartVertex(const MazeGraph &maze) noexcept;
-
-        static VertexCollection unvisitedNeighbours(const MazeGraph &tmplt, UnvisitedVertices &unvisited, const vertex &v);
-
-        static VertexCollection neighbours(const MazeGraph &tmplt, const vertex &v);
-
-        static int numCells(const MazeGraph &maze);
-
-    private:
-        const int width;
-        const int height;
     };
 }

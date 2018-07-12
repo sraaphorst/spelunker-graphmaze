@@ -11,6 +11,7 @@
 #include <stack>
 #include <vector>
 
+#include "GraphUtils.h"
 #include "MazeGraph.h"
 #include "MazeGenerator.h"
 #include "AldousBroderMazeGenerator.h"
@@ -18,25 +19,23 @@
 #include <iostream>
 
 namespace spelunker::graphmaze {
-    AldousBroderMazeGenerator::AldousBroderMazeGenerator(int width, int height)
-        : MazeGenerator{width, height} {}
 
     const MazeGraph AldousBroderMazeGenerator::generate(const MazeGraph &tmplt) const {
-        MazeGraph out = createInitialMaze(tmplt);
-        UnvisitedVertices unvisited = initializeUnvisitedVertices(tmplt);
+        MazeGraph out = GraphUtils::createInitialMaze(tmplt);
+        UnvisitedVertices unvisited = GraphUtils::initializeUnvisitedVertices(tmplt);
 
         // Keep track of the number of cells visited so that we know when to stop.
-        const auto nCells = numCells(out);
+        const auto nCells = GraphUtils::numCells(out);
 
         // Pick a random vertex to start.
-        auto v = randomStartVertex(out);
+        auto v = GraphUtils::randomStartVertex(out);
         auto visitedCells = 1;
         unvisited[v] = false;
 
         // Continue until we have visited all the cells.
         while (visitedCells < nCells) {
             // Get all the neighbours of the current cell and move to one at random.
-            const auto nbrs = neighbours(tmplt, v);
+            const auto nbrs = GraphUtils::neighbours(tmplt, v);
 
             // Select an unvisited neighbour at random.
             // TODO: Improve randomization.
