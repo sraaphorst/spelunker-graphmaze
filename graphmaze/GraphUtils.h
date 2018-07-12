@@ -27,6 +27,8 @@ namespace spelunker::graphmaze {
 
         static VertexCollection unvisitedNeighbours(const MazeSeed &seed, const vertex &v);
 
+        static VertexCollection visitedNeighbours(const MazeSeed &seed, const vertex &v);
+
         static VertexCollection neighbours(const MazeSeed &seed, const vertex &v);
 
     private:

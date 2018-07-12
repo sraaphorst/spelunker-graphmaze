@@ -68,6 +68,11 @@ namespace spelunker::graphmaze {
             std::cout << "Vertex " << *viter << std::endl;
         for (auto[eiter, eend] = boost::edges(graph); eiter != eend; ++eiter)
             std::cout << "Edge " << *eiter << std::endl;
+
+        // These are perfect mazes, so |edges| = #vertices - 1.
+        auto [ceIter, ceEnd] = boost::edges(graph);
+        const auto numEdges = std::distance(ceIter, ceEnd);
+        assert(numEdges == numVertices(graph) - 1);
     }
 
     // TODO: Fix this up.
@@ -75,14 +80,22 @@ namespace spelunker::graphmaze {
         return 0;
     }
 
-    VertexCollection GraphUtils::unvisitedNeighbours(const MazeSeed &seed, const vertex &v) {
+    static VertexCollection nbrs(const MazeSeed &seed, const vertex &v, const bool visited) {
         VertexCollection unvisitedNeighbours;
         for (auto [eiter, eEnd] = boost::out_edges(v, seed.tmplt); eiter != eEnd; ++eiter) {
             const vertex t = boost::target(*eiter, seed.tmplt);
-            if (seed.unvisited.at(t))
+            if (seed.unvisited.at(t) != visited)
                 unvisitedNeighbours.emplace_back(t);
         }
         return unvisitedNeighbours;
+    }
+
+    VertexCollection GraphUtils::unvisitedNeighbours(const MazeSeed &seed, const vertex &v) {
+        return nbrs(seed, v, false);
+    }
+
+    VertexCollection GraphUtils::visitedNeighbours(const MazeSeed &seed, const vertex &v) {
+        return nbrs(seed, v, true);
     }
 
     VertexCollection GraphUtils::neighbours(const MazeSeed &seed, const vertex &v) {

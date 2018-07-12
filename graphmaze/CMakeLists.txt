@@ -5,16 +5,20 @@ project(spelunker_graphmaze VERSION 0.1.0 LANGUAGES CXX)
 
 set(PUBLIC_HEADER_FILES
         AldousBroderMazeGenerator.h
+        BFSMazeGenerator.h
         DFSMazeGenerator.h
         GraphUtils.h
+        HuntAndKillMazeGenerator.h
         MazeGraph.h
         MazeGenerator.h
         )
 
 set(SOURCE_FILES
         AldousBroderMazeGenerator.cpp
+        BFSMazeGenerator.cpp
         DFSMazeGenerator.cpp
         GraphUtils.cpp
+        HuntAndKillMazeGenerator.cpp
         )
 
 add_library(spelunker_graphmaze SHARED

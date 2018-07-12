@@ -22,4 +22,8 @@ target_link_libraries(dfs spelunker_graphmaze)
 
 add_executable(aldous_broder aldous_broder.cpp)
 target_link_libraries(aldous_broder spelunker_graphmaze)
+
+add_executable(bfs bfs.cpp)
+target_link_libraries(bfs spelunker_graphmaze)
+
 message("Done")

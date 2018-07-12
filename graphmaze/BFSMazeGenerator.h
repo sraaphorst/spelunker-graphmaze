@@ -1,5 +1,5 @@
 /**
- * AldousBroderMazeGenerator.h
+ * BFSMazeGenerator.h
  *
  * By Sebastian Raaphorst, 2018.
  */
@@ -10,10 +10,10 @@
 #include "MazeGraph.h"
 
 namespace spelunker::graphmaze {
-    class AldousBroderMazeGenerator : public MazeGenerator {
+    class BFSMazeGenerator final : public MazeGenerator{
     public:
-        AldousBroderMazeGenerator() = default;
-        ~AldousBroderMazeGenerator() = default;
+        BFSMazeGenerator() = default;
+        ~BFSMazeGenerator() = default;
 
         const MazeGraph generate(const MazeGraph &tmplt) const final;
     };
