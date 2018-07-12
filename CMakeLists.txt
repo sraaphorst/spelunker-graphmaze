@@ -17,8 +17,8 @@ add_subdirectory(graphmaze)
 message("Done")
 
 message("Starting compilation of apps...")
-add_executable(bfs bfs.cpp)
-target_link_libraries(bfs spelunker_graphmaze)
+add_executable(dfs dfs.cpp)
+target_link_libraries(dfs spelunker_graphmaze)
 
 add_executable(aldous_broder aldous_broder.cpp)
 target_link_libraries(aldous_broder spelunker_graphmaze)

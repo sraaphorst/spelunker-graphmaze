@@ -5,7 +5,7 @@ project(spelunker_graphmaze VERSION 0.1.0 LANGUAGES CXX)
 
 set(PUBLIC_HEADER_FILES
         AldousBroderMazeGenerator.h
-        BFSMazeGenerator.h
+        DFSMazeGenerator.h
         GraphUtils.h
         MazeGraph.h
         MazeGenerator.h
@@ -13,7 +13,7 @@ set(PUBLIC_HEADER_FILES
 
 set(SOURCE_FILES
         AldousBroderMazeGenerator.cpp
-        BFSMazeGenerator.cpp
+        DFSMazeGenerator.cpp
         GraphUtils.cpp
         )
 

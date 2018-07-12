@@ -1,5 +1,5 @@
 /**
- * BFSMazeGenerator.cpp
+ * DFSMazeGenerator.cpp
  *
  * By Sebastian Raaphorst, 2018.
  */
@@ -11,11 +11,11 @@
 #include "GraphUtils.h"
 #include "MazeGraph.h"
 #include "MazeGenerator.h"
-#include "BFSMazeGenerator.h"
+#include "DFSMazeGenerator.h"
 
 namespace spelunker::graphmaze {
 
-    const MazeGraph BFSMazeGenerator::generate(const MazeGraph &tmplt) const {
+    const MazeGraph DFSMazeGenerator::generate(const MazeGraph &tmplt) const {
         MazeSeed seed = GraphUtils::makeSeed(tmplt);
 
         std::stack<vertex> stack;

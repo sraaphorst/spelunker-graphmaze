@@ -1,5 +1,5 @@
 /**
- * RandomizedBFSMazeGenerator.h
+ * DFSMazeGenerator.h
  *
  * By Sebastian Raaphorst, 2018.
  */
@@ -15,9 +15,9 @@ namespace spelunker::graphmaze {
     /**
      * This is a MazeGenerator that works based on a randomized breadth first search.
      */
-    class BFSMazeGenerator : public MazeGenerator {
+    class DFSMazeGenerator : public MazeGenerator {
     public:
-        BFSMazeGenerator() = default;
+        DFSMazeGenerator() = default;
 
         const MazeGraph generate(const MazeGraph &tmplt) const final;
     };
