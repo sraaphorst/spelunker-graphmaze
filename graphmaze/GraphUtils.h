@@ -17,6 +17,10 @@ namespace spelunker::graphmaze {
         GraphUtils() = delete;
 
     public:
+        static MazeGraph makeGrid(int width, int height);
+
+        static MazeGraph makeCylinder(int width, int height);
+
         static MazeGraph makeTorus(int width, int height);
 
         static MazeSeed makeSeed(const MazeGraph &tmplt) noexcept;

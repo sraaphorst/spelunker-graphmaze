@@ -5,51 +5,64 @@
  */
 
 #include <iostream>
+#include <tuple>
 
 #include "MazeGraph.h"
 #include "GraphUtils.h"
 
 namespace spelunker::graphmaze {
 
-    MazeGraph GraphUtils::makeTorus(const int width, const int height) {
-        auto ranker = [width, height](int x, int y) {
-            x = (x + width) % width;
-            y = (y + height) % height;
-            return x + y * width;
-        };
+    // Ranking / unranking functions needed to work with the underlying grid nature.
+    static int ranker(const int x, const int y, const int width, const int height) {
+        const auto xp = (x + width) % width;
+        const auto yp = (y + height) % height;
+        return xp + yp * width;
+    }
 
-        auto unranker = [width](int v) {
-            return std::make_pair(v % width, v / width);
-        };
+    static std::pair<int, int> unranker(const int v, const int width) {
+        return std::make_pair(v % width, v / width);
+    }
 
+    MazeGraph GraphUtils::makeGrid(const int width, const int height) {
         MazeGraph g;
+
         for (auto y = 0; y < height; ++y)
             for (auto x = 0; x < width; ++x) {
-                const auto v = ranker(x, y);
+                const auto v = ranker(x, y, width, height);
                 const auto w = boost::add_vertex(g);
                 assert(v == w);
-
-                std::cout << "Added vertex " << v << "(" << x << ", " << y << ")" << std::endl;
             }
 
-        // Create the torus.
-        for (auto[viter, vend] = boost::vertices(g); viter != vend; ++viter) {
-            // Add all four directions.
-            const auto v = *viter;
-            const auto [vx, vy] = unranker(v);
-            const auto xm1 = ranker(vx-1, vy);
-            const auto xp1 = ranker(vx+1, vy);
-            const auto ym1 = ranker(vx, vy-1);
-            const auto yp1 = ranker(vx, vy+1);
-            std::cout << "Adding edge to (" << v << "," << xm1 << ")" << std::endl;
-            boost::add_edge(v, xm1, g);
-            std::cout << "Adding edge to (" << v << "," << xp1 << ")" << std::endl;
-            boost::add_edge(v, xp1, g);
-            std::cout << "Adding edge to (" << v << "," << ym1 << ")" << std::endl;
-            boost::add_edge(v, ym1, g);
-            std::cout << "Adding edge to (" << v << "," << yp1 << ")" << std::endl;
-            boost::add_edge(v, yp1, g);
+        // Now add all right and down edges.
+        for (auto y = 0; y < height; ++y) {
+            for (auto x = 0; x < width; ++x) {
+                // Check if we can add right.
+                if (x < width - 1)
+                    boost::add_edge(ranker(x, y, width, height), ranker(x+1, y, width, height), g);
+                // Check if we can add down.
+                if (y < height - 1)
+                    boost::add_edge(ranker(x, y, width, height), ranker(x, y+1, width, height), g);
+            }
         }
+
+        return g;
+    }
+
+    MazeGraph GraphUtils::makeCylinder(const int width, const int height) {
+        MazeGraph g = makeGrid(width, height);
+
+        // Add the additional edges.
+        for (auto y = 0; y < height; ++y)
+            boost::add_edge(ranker(0, y, width, height), ranker(width-1, y, width, height), g);
+        return g;
+    }
+
+    MazeGraph GraphUtils::makeTorus(const int width, const int height) {
+        MazeGraph g = makeCylinder(width, height);
+
+        // Add the additional edges.
+        for (auto x = 0; x < width; ++ x)
+            boost::add_edge(ranker(x, 0, width, height), ranker(x, height-1, width, height), g);
 
         return g;
     }

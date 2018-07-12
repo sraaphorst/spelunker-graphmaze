@@ -26,4 +26,7 @@ target_link_libraries(aldous_broder spelunker_graphmaze)
 add_executable(bfs bfs.cpp)
 target_link_libraries(bfs spelunker_graphmaze)
 
+add_executable(hunt_and_kill hunt_and_kill.cpp)
+target_link_libraries(hunt_and_kill spelunker_graphmaze)
+
 message("Done")
