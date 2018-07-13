@@ -33,7 +33,7 @@ namespace spelunker::graphmaze {
 
         static MazeSeed makeSeed(const MazeGraph &tmplt) noexcept;
 
-        static void outputGraph(std::ostream &out, MazeGraph graph);
+        static void outputGraph(std::ostream &out, const MazeGraph &graph);
 
         static vertex randomStartVertex(const MazeGraph &maze) noexcept;
 
@@ -44,7 +44,6 @@ namespace spelunker::graphmaze {
         static VertexCollection neighbours(const MazeSeed &seed, const vertex &v);
 
     private:
-        static void makeHemisphere()
         static MazeGraph createInitialMaze(const MazeGraph &tmplt) noexcept;
 
         static UnvisitedVertices initializeUnvisitedVertices(const MazeGraph &tmplt) noexcept;

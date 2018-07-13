@@ -72,7 +72,6 @@ namespace spelunker::graphmaze {
         return g;
     }
 
-
     MazeGraph GraphUtils::makeCircular(int radius) {
         MazeGraph g;
 
@@ -126,7 +125,6 @@ namespace spelunker::graphmaze {
         return g;
     }
 
-
     MazeSeed GraphUtils::makeSeed(const MazeGraph &tmplt) noexcept {
         return MazeSeed {
             tmplt,
@@ -136,7 +134,7 @@ namespace spelunker::graphmaze {
         };
     }
 
-    void GraphUtils::outputGraph(std::ostream &out, MazeGraph graph) {
+    void GraphUtils::outputGraph(std::ostream &out, const MazeGraph &graph) {
         for (auto[viter, vend] = boost::vertices(graph); viter != vend; ++viter)
             std::cout << "Vertex " << *viter << std::endl;
         for (auto[eiter, eend] = boost::edges(graph); eiter != eend; ++eiter)

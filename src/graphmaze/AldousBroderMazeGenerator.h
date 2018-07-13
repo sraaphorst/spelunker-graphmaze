@@ -10,12 +10,12 @@
 #include "MazeGraph.h"
 
 namespace spelunker::graphmaze {
-    class AldousBroderMazeGenerator : public MazeGenerator {
+    class AldousBroderMazeGenerator final : public MazeGenerator {
     public:
         AldousBroderMazeGenerator() = default;
         ~AldousBroderMazeGenerator() = default;
 
-        const MazeGraph generate(const MazeGraph &tmplt) const final;
+        const MazeGraph generate(const MazeGraph &tmplt) const;
     };
 }
 

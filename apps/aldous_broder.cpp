@@ -3,10 +3,10 @@
 #include <tuple>
 #include <vector>
 
-#include "graphmaze/GraphUtils.h"
-#include "graphmaze/MazeGraph.h"
-#include "graphmaze/MazeGenerator.h"
-#include "graphmaze/AldousBroderMazeGenerator.h"
+#include <graphmaze/GraphUtils.h>
+#include <graphmaze/MazeGraph.h>
+#include <graphmaze/MazeGenerator.h>
+#include <graphmaze/AldousBroderMazeGenerator.h>
 
 using namespace spelunker::graphmaze;
 

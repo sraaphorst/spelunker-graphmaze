@@ -1,9 +1,7 @@
 # CMakeLists.txt
 # By Sebastian Raaphorst, 2018.
 
-project(spelunker_graphmaze VERSION 0.1.0 LANGUAGES CXX)
-
-set(PUBLIC_HEADER_FILES
+set(_GRAPHMAZE_PUBLIC_HEADER_FILES
         AldousBroderMazeGenerator.h
         BFSMazeGenerator.h
         DFSMazeGenerator.h
@@ -11,18 +9,18 @@ set(PUBLIC_HEADER_FILES
         HuntAndKillMazeGenerator.h
         MazeGraph.h
         MazeGenerator.h
+        PARENT_SCOPE
         )
 
-set(SOURCE_FILES
+set(_GRAPHMAZE_PRIVATE_HEADER_FILES
+        PARENT_SCOPE
+        )
+
+set(_GRAPHMAZE_SOURCE_FILES
         AldousBroderMazeGenerator.cpp
         BFSMazeGenerator.cpp
         DFSMazeGenerator.cpp
         GraphUtils.cpp
         HuntAndKillMazeGenerator.cpp
+        PARENT_SCOPE
         )
-
-add_library(spelunker_graphmaze SHARED
-        ${PUBLIC_HEADER_FILES}
-        ${SOURCE_FILES}
-        )
-
