@@ -4,7 +4,12 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+// For M_PI.
+#define _USE_MATH_DEFINES
+
+#include <cmath>
 #include <iostream>
+#include <map>
 #include <tuple>
 
 #include "MazeGraph.h"
@@ -66,6 +71,61 @@ namespace spelunker::graphmaze {
 
         return g;
     }
+
+
+    MazeGraph GraphUtils::makeCircular(int radius) {
+        MazeGraph g;
+
+        // We still want a map from row x column to vertex number, i.e. a ranking function, but more complex
+        // (ha) than in the case of anything grid-like, so we just use a map.
+        std::map<std::pair<int, int>, vertex> ranker;
+
+        // Add the (0,0) vertex.
+        ranker[std::make_pair(0,0)] = boost::add_vertex(g);
+
+        // Keep track of the number of vertices (columns / cells) in the previous row.
+        int prevCols = 1;
+
+        const auto rowHeight = 1.0 / radius;
+        std::cout << "rowHeight=" << rowHeight << std::endl;
+
+        for (auto row = 1; row < radius; ++row) {
+            // Determine the number of cells we want in this row. Their size should be as close as possible to the
+            // number of cells in the previous row: we branch if it is not.
+            const auto innerRadius = row * rowHeight;
+            const auto innerCircumference = 2 * M_PI * innerRadius;
+            const auto estimatedCellWidth = innerCircumference / prevCols;
+            const auto ratio = static_cast<int>(std::round(estimatedCellWidth / rowHeight));
+            const auto cols = prevCols * ratio;
+            std::cout << "innerR=" << innerRadius << std::endl;
+            std::cout << "innerC=" << innerCircumference << std::endl;
+            std::cout << "estCellWidth=" << estimatedCellWidth << std::endl;
+            std::cout << "ratio=" << ratio << std::endl;
+            std::cout << "cols=" << cols << std::endl << std::endl;
+
+            // Add the cells for this row.
+            for (int col = 0; col < cols; ++col)
+                ranker[std::make_pair(row, col)] = boost::add_vertex(g);
+
+            // Now add the adjacencies.
+            // The ratio, which is integral, dictates the number of columns in this row per column of the previous
+            // row, so we use this to dictate parental adjacency.
+            for (int col = 0; col < cols; ++col) {
+                // As we are undirected, we only need to connect to our clockwise neighbour.
+                int nextCol = (col + 1) % cols;
+                boost::add_edge(ranker[std::make_pair(row, col)], ranker[std::make_pair(row, nextCol)], g);
+
+                // The parent vertex is the one in the previous row where col / ratio, as there are ratio vertices
+                // in this row for each vertex in the previous row.
+                boost::add_edge(ranker[std::make_pair(row, col)], ranker[std::make_pair(row-1, col / ratio)], g);
+            }
+
+            prevCols = cols;
+        }
+
+        return g;
+    }
+
 
     MazeSeed GraphUtils::makeSeed(const MazeGraph &tmplt) noexcept {
         return MazeSeed {

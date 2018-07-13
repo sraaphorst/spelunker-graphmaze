@@ -9,6 +9,7 @@
 #include <boost/graph/adjacency_list.hpp>
 
 #include <map>
+#include <tuple>
 #include <vector>
 
 namespace spelunker::graphmaze {
@@ -47,4 +48,7 @@ namespace spelunker::graphmaze {
          const int numVertices;
          UnvisitedVertices unvisited;
      };
+
+     /// A map of (row, col) to vertex.
+     using VertexRank = std::map<std::pair<int, int>, vertex>;
 }

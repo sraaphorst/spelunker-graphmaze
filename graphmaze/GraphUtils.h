@@ -23,6 +23,14 @@ namespace spelunker::graphmaze {
 
         static MazeGraph makeTorus(int width, int height);
 
+        /**
+         * Create a circular maze of radius rings, and uses adaptive subdivision to divide the rings
+         * into cells, with the goal of keeping the cell width approximately the same as the cell height.
+         * @param radius indicates the number of rings in the circle
+         * @return the graph representing this
+         */
+        static MazeGraph makeCircular(int radius);
+
         static MazeSeed makeSeed(const MazeGraph &tmplt) noexcept;
 
         static void outputGraph(std::ostream &out, MazeGraph graph);
@@ -36,6 +44,7 @@ namespace spelunker::graphmaze {
         static VertexCollection neighbours(const MazeSeed &seed, const vertex &v);
 
     private:
+        static void makeHemisphere()
         static MazeGraph createInitialMaze(const MazeGraph &tmplt) noexcept;
 
         static UnvisitedVertices initializeUnvisitedVertices(const MazeGraph &tmplt) noexcept;

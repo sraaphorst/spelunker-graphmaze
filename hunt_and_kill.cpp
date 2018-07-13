@@ -12,9 +12,10 @@ using namespace spelunker::graphmaze;
 
 constexpr auto W = 50;
 constexpr auto H = 40;
+constexpr auto R = 3;
 
 int main() {
-    MazeGraph torus = GraphUtils::makeGrid(W, H);
+    MazeGraph torus = GraphUtils::makeCircular(R);
     const auto maze = HuntAndKillMazeGenerator{}.generate(torus);
     GraphUtils::outputGraph(std::cout, maze);
 }

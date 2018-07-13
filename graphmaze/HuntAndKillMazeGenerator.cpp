@@ -4,7 +4,6 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include <iostream>
 #include "GraphUtils.h"
 #include "HuntAndKillMazeGenerator.h"
 #include "MazeGraph.h"
@@ -27,7 +26,6 @@ namespace spelunker::graphmaze {
                 firstRun = false;
 
                 const auto visitedNbrs = GraphUtils::visitedNeighbours(seed, v);
-                std::cout << "1. v=" << v << ", nbrs=" << visitedNbrs.size() << std::endl;
                 if (visitedNbrs.empty()) {
                     ++v;
                     continue;
@@ -47,7 +45,6 @@ namespace spelunker::graphmaze {
 
             // Continue to carve a random walk until we can no longer do so.
             while (true) {
-                std::cout << "2. v=" << v << std::endl;
                 // Get the unvisited neighbours of v and pick one.
                 const auto unvisitedNbrs = GraphUtils::unvisitedNeighbours(seed, v);
                 if (unvisitedNbrs.empty())
