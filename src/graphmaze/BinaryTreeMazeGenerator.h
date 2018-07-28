@@ -6,6 +6,10 @@
  * This algorithm iterates from vertex 0, trying to carve one new edge per
  * vertex according to a list determined by the function that is part of the
  * graph properties.
+ *
+ * It has been tested on the following and found to generate mazes:
+ * 1. Grids, cylinders, toruses, mobius strips, Klein bottles, and projective planes; and
+ * 2. Circles and spheres.
  */
 
 #pragma once

@@ -1,5 +1,5 @@
 /**
- * Orientation.h
+ * AxialOrientation.h
  *
  * By Sebastian Raaphorst, 2018.
  */

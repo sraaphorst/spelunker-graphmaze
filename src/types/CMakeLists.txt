@@ -5,6 +5,7 @@ set(_TYPES_PUBLIC_HEADER_FILES
         AxialOrientation.h
         Direction.h
         DisjointSetHelper.h
+        Exceptions.h
         PARENT_SCOPE
         )
 

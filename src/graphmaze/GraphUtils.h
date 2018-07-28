@@ -38,6 +38,14 @@ namespace spelunker::graphmaze {
          */
         static MazeGraph makeCircular(int radius);
 
+        /**
+         * Create a spherical maze of diameter rings. Note that we use diameter as opposed to radius to allow for
+         * an odd number of rings.
+         * @param diameter the diameter of the sphere in rows
+         * @return the graph representing this
+         */
+        static MazeGraph makeSpherical(int diameter);
+
         static MazeSeed makeSeed(const MazeGraph &tmplt) noexcept;
 
         static void outputGraph(std::ostream &out, const MazeGraph &graph);

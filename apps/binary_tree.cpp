@@ -10,16 +10,10 @@
 
 using namespace spelunker::graphmaze;
 
-constexpr auto W = 100;
-constexpr auto H = 100;
-constexpr auto R = 10;
+constexpr auto R = 21;
 
 int main() {
-//    const auto grid = GraphUtils::makeProjectivePlane(W, H);
-//    const auto maze = BinaryTreeMazeGenerator{}.generate(grid);
-//    GraphUtils::outputGraph(std::cout, maze);
-
-    const auto circ = GraphUtils::makeCircular(R);
+    const auto circ = GraphUtils::makeSpherical(R);
     const auto cmaze = BinaryTreeMazeGenerator{}.generate(circ);
     GraphUtils::outputGraph(std::cout, cmaze);
 }

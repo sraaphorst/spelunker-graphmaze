@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <math/RNG.h>
+#include <types/Exceptions.h>
 
 #include "GraphUtils.h"
 #include "MazeGraph.h"
@@ -17,6 +18,11 @@ namespace spelunker::graphmaze {
 
     const MazeGraph BinaryTreeMazeGenerator::generate(const MazeGraph &tmplt) const {
         MazeSeed seed = GraphUtils::makeSeed(tmplt);
+
+        // Make sure that we have a binary tree function, which is needed to pick carving directions.
+        // TODO: There has to be a nicer way to get the graph property than this mess.
+        if (!tmplt.m_property.get()->binaryTreeCandidates.has_value())
+            throw types::UnsupportedMazeGeneration();
         auto directionFn = tmplt.m_property.get()->binaryTreeCandidates.value();
 
         // Start at vertex 0 and just keep carving, forcing carving into new

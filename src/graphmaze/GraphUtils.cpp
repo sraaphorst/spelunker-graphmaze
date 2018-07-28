@@ -188,7 +188,6 @@ namespace spelunker::graphmaze {
         // Calculate the ring sizes and create the binary tree function.
         const auto ringSizes = calculateRingSizes(radius);
         const auto circularFunction = makeCircularFunction(ringSizes);
-        // A circular graph has more of a parent-sibling relationship when it comes to rank rather than the standard
 
         MazeGraph g{GraphInfo{false, circularFunction}};
 
@@ -208,7 +207,7 @@ namespace spelunker::graphmaze {
             // Now add the adjacencies.
             // The ratio, which is integral, dictates the number of columns in this row per column of the previous
             // row, so we use this to dictate parental adjacency.
-            const auto ratio = cols / ringSizes[row-1];
+            const auto ratio = cols / ringSizes[row - 1];
 
             for (int col = 0; col < cols; ++col) {
                 const vertex v = ranker[std::make_pair(row, col)];
@@ -225,6 +224,116 @@ namespace spelunker::graphmaze {
                 boost::add_edge(v, vp, eip, g);
             }
         }
+
+        return g;
+    }
+
+    static BTCandidateFunction makeSphericalFunction(int numCells) {
+        // We always allow SOUTH and EAST unless not possible, which occurs in the cases of the two poles.
+        // Fron the north pole, we can only go south, and from the south pole, we cannot go anywhere.
+        return [numCells](vertex v) {
+            std::set<types::Direction> dirs;
+            if (v < numCells - 1) {
+                dirs.insert(types::Direction::SOUTH);
+                if (v > 0)
+                    dirs.insert(types::Direction::EAST);
+            }
+            return dirs;
+        };
+    }
+
+    /**
+     * We could base this on makeCircular by joining two circular halves together, but we want NSEW directions instead
+     * of in / out directions, and we must handle the equator carefully, so we do this independently despite
+     * the code being a bit repetitive.
+     */
+    MazeGraph GraphUtils::makeSpherical(int diameter) {
+        // Calculate the ring sizes. If radius is odd, then we want to include the equator in this calculation.
+        const auto northernRows = diameter / 2 + diameter % 2;
+        const auto ringSizes = calculateRingSizes(northernRows);
+
+        // Calculate the total number of cells, being careful not to count the equator twice.
+        const auto numCells = 2 * std::accumulate(ringSizes.cbegin(), ringSizes.cend(), 0) - (diameter % 2) * ringSizes.back();
+        const auto sphericalFunction = makeSphericalFunction(numCells);
+
+        MazeGraph g{GraphInfo{false, sphericalFunction}};
+
+        // We still want a map from row x column to vertex number, i.e. a ranking function, but more complex
+        // (ha) than in the case of anything grid-like, so we just use a map.
+        std::map<std::pair<int, int>, vertex> ranker;
+
+        // Create the two halves of the sphere separately.
+        // This will give us a nicer ordering on the vertices: they will continuously increase from
+        // north pole to south pole.
+
+        // Begin by adding the north pole.
+        ranker[std::make_pair(0,0)] = boost::add_vertex(g);
+
+        // Now create the northern hemisphere, and if radius is odd, the equator.
+        for (auto row = 1; row < northernRows; ++row) {
+            // Add the cells for this ring of latitude.
+            const int cols = ringSizes[row];
+            for (int col = 0; col < cols; ++col)
+                ranker[std::make_pair(row, col)] = boost::add_vertex(g);
+
+            // Now add the adjacencies.
+            // The ratio, as in the case of the circular maze, indicates the northern parent.
+            const auto ratio = cols / ringSizes[row - 1];
+
+            for (int col = 0; col < cols; ++col) {
+                const vertex v = ranker[std::make_pair(row, col)];
+
+                // Link east.
+                int nextCol = (col + 1) % cols;
+                const vertex ve = ranker[std::make_pair(row, nextCol)];
+                const EdgeInfo eie { v, types::Direction::EAST, ve, types::Direction::WEST };
+                boost::add_edge(v, ve, eie, g);
+
+                // Link north.
+                const vertex vn = ranker[std::make_pair(row - 1, col / ratio)];
+                const EdgeInfo ein { v, types::Direction::NORTH, vn, types::Direction::SOUTH };
+                boost::add_edge(v, vn, ein, g);
+            }
+        }
+
+        // Now create the southern hemisphere, including the south pole.
+        int curRow = ringSizes.size();
+        int prevCols = ringSizes.back();
+        for (int southRow = ringSizes.size() - 1 - diameter % 2; southRow >= 0; --southRow) {
+            // Add the cells for this ring of latitude.
+            const int cols = ringSizes[southRow];
+            for (int col = 0; col < cols; ++col)
+                ranker[std::make_pair(curRow, col)] = boost::add_vertex(g);
+
+            // Now add the adjacencies.
+            // The ratio will dictate how many cells in the north latitude correspond to each in this one.
+            // This row will have the same or fewer.
+            const auto ratio = prevCols / cols;
+
+            int prevCt = 0;
+            for (int col = 0; col < cols; ++col) {
+                const vertex v = ranker[std::make_pair(curRow, col)];
+
+                // Link east.
+                int nextCol = (col + 1) % cols;
+                const vertex ve = ranker[std::make_pair(curRow, nextCol)];
+                const EdgeInfo eie { v, types::Direction::EAST, ve, types::Direction::WEST };
+                boost:add_edge(v, ve, eie, g);
+
+                // Link north.
+                for (int i = 0; i < ratio; ++i) {
+                    const vertex vn = ranker[std::make_pair(curRow - 1, prevCt)];
+                    const EdgeInfo ein { v, types::Direction::NORTH, vn, types::Direction::SOUTH };
+                    boost::add_edge(v, vn, ein, g);
+                    ++prevCt;
+                }
+            }
+            assert(prevCt == prevCols);
+
+            prevCols = cols;
+            ++curRow;
+        }
+        assert(curRow == diameter);
 
         return g;
     }
