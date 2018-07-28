@@ -4,21 +4,12 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include <boost/graph/adjacency_list.hpp>
-
-#include <algorithm>
-#include <map>
-#include <stack>
-#include <vector>
-
 #include <math/RNG.h>
 
 #include "GraphUtils.h"
 #include "MazeGraph.h"
 #include "MazeGenerator.h"
 #include "AldousBroderMazeGenerator.h"
-
-#include <iostream>
 
 namespace spelunker::graphmaze {
 
@@ -32,7 +23,6 @@ namespace spelunker::graphmaze {
 
         // Continue until we have visited all the cells.
         while (visitedCells < seed.numVertices) {
-            std::cout << "Visited=" << visitedCells << " of " << seed.numVertices << std::endl;
             // Get all the neighbours of the current cell and move to one at random.
             const auto nbrs = GraphUtils::neighbours(seed, v);
 
@@ -42,13 +32,11 @@ namespace spelunker::graphmaze {
             if (seed.unvisited[nxt]) {
                 seed.unvisited[nxt] = false;
                 ++visitedCells;
-                std::cout << "Making edge: " << v << " -> " << nxt << std::endl;
                 GraphUtils::addEdge(v, nxt, seed);
-                auto [ei, ee] = boost::edges(seed.maze);
-                std::cout << "Now: " << std::distance(ei, ee) << " edges." << std::endl;
             }
             v = nxt;
         }
+
         return seed.maze;
     }
 }

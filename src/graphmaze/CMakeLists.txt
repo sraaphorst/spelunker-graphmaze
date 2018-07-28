@@ -4,6 +4,7 @@
 set(_GRAPHMAZE_PUBLIC_HEADER_FILES
         AldousBroderMazeGenerator.h
         BFSMazeGenerator.h
+        BinaryTreeMazeGenerator.h
         DFSMazeGenerator.h
         GraphUtils.h
         HuntAndKillMazeGenerator.h
@@ -18,6 +19,7 @@ set(_GRAPHMAZE_PRIVATE_HEADER_FILES
 
 set(_GRAPHMAZE_SOURCE_FILES
         AldousBroderMazeGenerator.cpp
+        BinaryTreeMazeGenerator.cpp
         BFSMazeGenerator.cpp
         DFSMazeGenerator.cpp
         GraphUtils.cpp

@@ -38,8 +38,14 @@ namespace spelunker::graphmaze {
         static const std::size_t num;
     };
 
+    struct GraphInfoPropertyTag {
+        using kind = boost::graph_property_tag;
+        static const std::size_t num;
+    };
+
     using vertex_info_prop_type = boost::property<VertexInfoPropertyTag, VertexInfo>;
-    using edge_info_prop_type = boost::property<EdgeInfoPropertyTag, EdgeInfo>;
+    using edge_info_prop_type   = boost::property<EdgeInfoPropertyTag, EdgeInfo>;
+    using graph_info_prop_type  = boost::property<GraphInfoPropertyTag, GraphInfo>;
 
     /**
      * To represent a potential maze for building, we have vertices
@@ -84,6 +90,8 @@ namespace spelunker::graphmaze {
       * Graph properties. These consist of several fundamental properties of the graph that allow us to use or not
       * use certain algorithms. For example, to use the binary tree algorithm, we need to specify directions based
       * on the vertex type for the algorithm to choose from.
+      * TODO: We should probably encompass the concept of column and row here.
+      * TODO: For spaces like Klein bottle, a "row" should encompass both rows that are contiguous.
       */
      using BTCandidateFunction = std::function<std::set<types::Direction>(vertex)>;
      struct GraphInfo {

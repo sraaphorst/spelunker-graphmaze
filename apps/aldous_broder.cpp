@@ -10,8 +10,8 @@
 
 using namespace spelunker::graphmaze;
 
-constexpr auto W = 5;
-constexpr auto H = 5;
+constexpr auto W = 100;
+constexpr auto H = 100;
 
 int main() {
     const auto grid = GraphUtils::makeKleinBottle(W, H);

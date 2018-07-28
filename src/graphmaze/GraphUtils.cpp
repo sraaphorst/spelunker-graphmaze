@@ -244,10 +244,14 @@ namespace spelunker::graphmaze {
         for (auto[eiter, eend] = boost::edges(graph); eiter != eend; ++eiter)
             std::cout << "Edge " << *eiter << std::endl;
 
-        // These are perfect mazes, so |edges| = #vertices - 1.
+        // These are perfect mazes, so we should have |edges| = #vertices - 1.
+        const auto v = numVertices(graph);
+
         auto [ceIter, ceEnd] = boost::edges(graph);
-        const auto numEdges = std::distance(ceIter, ceEnd);
-        assert(numEdges == numVertices(graph) - 1);
+        const auto e = std::distance(ceIter, ceEnd);
+
+        std::cout << v << " vertices, " << e << " edges" << std::endl;
+        assert(e == v - 1);
     }
 
     vertex GraphUtils::randomStartVertex(const MazeGraph &maze) noexcept {
@@ -276,7 +280,6 @@ namespace spelunker::graphmaze {
         // Get the edge properties from the template.
         auto edge = boost::edge(v1, v2, seed.tmplt);
         auto edgeInfo = boost::get(EdgeInfoPropertyTag(), seed.tmplt, edge.first);
-        std::cout << "Adding edge!" << std::endl;
         boost::add_edge(v1, v2, edgeInfo, seed.maze);
     }
 

@@ -14,6 +14,9 @@ target_link_libraries(aldous_broder LINK_PUBLIC spelunker_graphmaze)
 add_executable(bfs bfs.cpp)
 target_link_libraries(bfs LINK_PUBLIC spelunker_graphmaze)
 
+add_executable(binary_tree binary_tree.cpp)
+target_link_libraries(binary_tree LINK_PUBLIC spelunker_graphmaze)
+
 add_executable(hunt_and_kill hunt_and_kill.cpp)
 target_link_libraries(hunt_and_kill LINK_PUBLIC spelunker_graphmaze)
 
