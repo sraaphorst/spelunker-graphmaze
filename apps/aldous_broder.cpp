@@ -10,11 +10,11 @@
 
 using namespace spelunker::graphmaze;
 
-constexpr auto W = 50;
-constexpr auto H = 40;
+constexpr auto W = 5;
+constexpr auto H = 5;
 
 int main() {
-    const auto torus = GraphUtils::makeCylinder(W, H);
-    const auto maze = AldousBroderMazeGenerator{}.generate(torus);
+    const auto grid = GraphUtils::makeKleinBottle(W, H);
+    const auto maze = AldousBroderMazeGenerator{}.generate(grid);
     GraphUtils::outputGraph(std::cout, maze);
 }

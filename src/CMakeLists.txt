@@ -9,6 +9,7 @@ set(SUBDIRS
         graphmaze
         math
         types
+        typeclasses
         )
 
 # Add all files to the lists.

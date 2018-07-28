@@ -8,6 +8,8 @@
 
 #include <queue>
 
+#include <math/RNG.h>
+
 #include "GraphUtils.h"
 #include "MazeGraph.h"
 #include "MazeGenerator.h"
@@ -40,15 +42,13 @@ namespace spelunker::graphmaze {
             seed.unvisited[v] = false;
 
             // Find all its visited neighbours and carve a passage to one of them.
-            // TODO: Improve randomization.
             const auto visitedNbrs = GraphUtils::visitedNeighbours(seed, v);
-            const auto idx = rand() % visitedNbrs.size();
-            const auto visitedNbr = visitedNbrs[idx];
-            boost::add_edge(v, visitedNbr, seed.maze);
+            const auto visitedNbr = math::RNG::randomElement(visitedNbrs);
+            GraphUtils::addEdge(v, visitedNbr, seed);
 
             // Enqueue all the unvisited neighbours.
-            // TODO: Should shuffle here.
-            const auto unvisitedNeighbours = GraphUtils::unvisitedNeighbours(seed, v);
+            auto unvisitedNeighbours = GraphUtils::unvisitedNeighbours(seed, v);
+            math::RNG::shuffle(unvisitedNeighbours);
             for (const auto nbr: unvisitedNeighbours)
                 queue.emplace(nbr);
         }

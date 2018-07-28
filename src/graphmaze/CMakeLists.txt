@@ -22,5 +22,6 @@ set(_GRAPHMAZE_SOURCE_FILES
         DFSMazeGenerator.cpp
         GraphUtils.cpp
         HuntAndKillMazeGenerator.cpp
+        MazeGraph.cpp
         PARENT_SCOPE
         )

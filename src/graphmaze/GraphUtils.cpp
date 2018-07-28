@@ -7,10 +7,15 @@
 // For M_PI.
 #define _USE_MATH_DEFINES
 
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <map>
+#include <set>
 #include <tuple>
+
+#include <math/DefaultRNG.h>
+#include <types/AxialOrientation.h>
 
 #include "MazeGraph.h"
 #include "GraphUtils.h"
@@ -28,8 +33,67 @@ namespace spelunker::graphmaze {
         return std::make_pair(v % width, v / width);
     }
 
+    /**
+     * Create candidate functions for a binary tree over a grid.
+     * We want to be able to use this function for all grid-like objects, i.e. grids, cylinders, toruses, mobius strips,
+     * Klein bottles, and projective planes.
+     *
+     * The question in each case is whether or not we allow edges at the various boundaries, which
+     * is dictated by the parameters to the function.
+     *
+     * Note that we NEED each row and each column to contain at least one cell of each direction or we will not be
+     * connected.
+     *
+     * @param width the width of the grid
+     * @param height the height of the grid
+     * @param xlooped true if the graph wraps around the x-axis, be it reversed or not
+     * @param ylooped true if the graph wraps around the y-axis, be it reversed or not
+     * @return
+     */
+    static BTCandidateFunction makeGridFunction(const int width, const int height,
+                                                const bool xlooped, const bool ylooped) {
+        return [width, height, xlooped, ylooped](vertex v) {
+            const auto x = v % height;
+            const auto y = v / height;
+            std::set<types::Direction> dirs;
+
+            if (xlooped || x < width - 1)  dirs.insert(types::Direction::EAST);
+            if (ylooped || y < height - 1) dirs.insert(types::Direction::SOUTH);
+            return dirs;
+        };
+    }
+
     MazeGraph GraphUtils::makeGrid(const int width, const int height) {
-        MazeGraph g;
+        return makeGrid(width, height, types::AxialOrientation::DISCONNECTED, types::AxialOrientation::DISCONNECTED);
+    }
+
+    MazeGraph GraphUtils::makeCylinder(const int width, const int height) {
+        return makeGrid(width, height, types::AxialOrientation::LOOPED, types::AxialOrientation::DISCONNECTED);
+    }
+
+    MazeGraph GraphUtils::makeTorus(const int width, const int height) {
+        return makeGrid(width, height, types::AxialOrientation::LOOPED, types::AxialOrientation::LOOPED);
+    }
+
+    MazeGraph GraphUtils::makeMobiusStrip(const int width, const int height) {
+        return makeGrid(width, height, types::AxialOrientation::REVERSE_LOOPED, types::AxialOrientation::DISCONNECTED);
+    }
+
+    MazeGraph GraphUtils::makeKleinBottle(const int width, const int height) {
+        return makeGrid(width, height, types::AxialOrientation::REVERSE_LOOPED, types::AxialOrientation::LOOPED);
+    }
+
+    MazeGraph GraphUtils::makeProjectivePlane(const int width, const int height) {
+        return makeGrid(width, height, types::AxialOrientation::REVERSE_LOOPED, types::AxialOrientation::REVERSE_LOOPED);
+    }
+
+    MazeGraph GraphUtils::makeGrid(const int width, const int height,
+                                   const types::AxialOrientation xorientation,
+                                   const types::AxialOrientation yorientation) {
+
+        MazeGraph g{GraphInfo{true, makeGridFunction(width, height,
+                                                           xorientation != types::AxialOrientation::DISCONNECTED,
+                                                           yorientation != types::AxialOrientation::DISCONNECTED)}};
 
         for (auto y = 0; y < height; ++y)
             for (auto x = 0; x < width; ++x) {
@@ -38,42 +102,95 @@ namespace spelunker::graphmaze {
                 assert(v == w);
             }
 
-        // Now add all right and down edges.
+        // Now add all east and south edges.
         for (auto y = 0; y < height; ++y) {
             for (auto x = 0; x < width; ++x) {
-                // Check if we can add right.
-                if (x < width - 1)
-                    boost::add_edge(ranker(x, y, width, height), ranker(x+1, y, width, height), g);
-                // Check if we can add down.
-                if (y < height - 1)
-                    boost::add_edge(ranker(x, y, width, height), ranker(x, y+1, width, height), g);
+                // Check if we can add east.
+                if (x < width - 1) {
+                    const vertex v1 = ranker(x, y, width, height);
+                    const vertex v2 = ranker(x + 1, y, width, height);
+                    const EdgeInfo ei { v1, types::Direction::EAST, v2, types::Direction::WEST };
+                    boost::add_edge(v1, v2, ei, g);
+                }
+                // Check if we can add south.
+                if (y < height - 1) {
+                    const vertex v1 = ranker(x, y, width, height);
+                    const vertex v2 = ranker(x, y + 1, width, height);
+                    const EdgeInfo ei { v1, types::Direction::SOUTH, v2, types::Direction::NORTH };
+                    boost::add_edge(v1, v2, ei, g);
+                }
+            }
+        }
+
+        // If we are x-looped, add the additional edges.
+        if (xorientation != types::AxialOrientation::DISCONNECTED) {
+            bool flip = xorientation == types::AxialOrientation::REVERSE_LOOPED;
+            for (auto y = 0; y < height; ++y) {
+                const vertex v1 = ranker(0, y, width, height);
+                const vertex v2 = ranker(width - 1, flip ? (height - y - 1) : y, width, height);
+                const EdgeInfo ei { v1, types::Direction::WEST, v2, types::Direction::EAST };
+                boost::add_edge(v1, v2, ei, g);
+            }
+        }
+
+        // If we are y-looped, add the additional edges.
+        if (yorientation != types::AxialOrientation::DISCONNECTED) {
+            bool flip = yorientation == types::AxialOrientation::REVERSE_LOOPED;
+            for (auto x = 0; x < width; ++x) {
+                const vertex v1 = ranker(x, 0, width, height);
+                const vertex v2 = ranker(flip ? (width - x - 1) : x, height - 1, width, height);
+                const EdgeInfo ei { v1, types::Direction::NORTH, v2, types::Direction::SOUTH };
+                boost::add_edge(v1, v2, ei, g);
             }
         }
 
         return g;
     }
 
-    MazeGraph GraphUtils::makeCylinder(const int width, const int height) {
-        MazeGraph g = makeGrid(width, height);
-
-        // Add the additional edges.
-        for (auto y = 0; y < height; ++y)
-            boost::add_edge(ranker(0, y, width, height), ranker(width-1, y, width, height), g);
-        return g;
+    static BTCandidateFunction makeCircularFunction(const std::vector<int> &sizes) {
+        // We always allow OUT and CLOCKWISE unless not possible.
+        // Determine the number of cells not in the last row.
+        int cellCount = std::accumulate(sizes.cbegin(), sizes.cend() - 1, 0);
+        return [sizes, cellCount](vertex v) {
+            std::set<types::Direction> dirs;
+            if (v <= cellCount) dirs.insert(types::Direction::OUT);
+            if (v > 0) dirs.insert(types::Direction::CLOCKWISE);
+            return dirs;
+        };
     }
 
-    MazeGraph GraphUtils::makeTorus(const int width, const int height) {
-        MazeGraph g = makeCylinder(width, height);
+    /**
+     * For a circular graph, calculate the number of cells in each ring.
+     * If we have rings i and i+1 with r_{i} and r_{i+1} cells in each, then
+     * each cell in ring i has r_{i+1} / r_{i} children in ring i+1.
+     * @param radius
+     * @return vector of cells per ring
+     */
+    static std::vector<int> calculateRingSizes(const int radius) {
+        const auto rowHeight = 1.0 / radius;
+        std::vector<int> sizes { 1 };
 
-        // Add the additional edges.
-        for (auto x = 0; x < width; ++ x)
-            boost::add_edge(ranker(x, 0, width, height), ranker(x, height-1, width, height), g);
+        for (auto row = 1; row < radius; ++row) {
+            // Determine the number of cells we want in this row. Their size should be as close as possible to the
+            // number of cells in the previous row: we branch if it is not.
+            const auto innerRadius = row * rowHeight;
+            const auto innerCircumference = 2 * M_PI * innerRadius;
+            const auto estimatedCellWidth = innerCircumference / sizes.back();
+            const auto ratio = static_cast<int>(std::round(estimatedCellWidth / rowHeight));
+            const auto cols = sizes.back() * ratio;
+            sizes.emplace_back(cols);
+        }
 
-        return g;
+        return sizes;
     }
 
     MazeGraph GraphUtils::makeCircular(int radius) {
-        MazeGraph g;
+        // Calculate the ring sizes and create the binary tree function.
+        const auto ringSizes = calculateRingSizes(radius);
+        const auto circularFunction = makeCircularFunction(ringSizes);
+        // A circular graph has more of a parent-sibling relationship when it comes to rank rather than the standard
+
+        MazeGraph g{GraphInfo{false, circularFunction}};
 
         // We still want a map from row x column to vertex number, i.e. a ranking function, but more complex
         // (ha) than in the case of anything grid-like, so we just use a map.
@@ -82,44 +199,31 @@ namespace spelunker::graphmaze {
         // Add the (0,0) vertex.
         ranker[std::make_pair(0,0)] = boost::add_vertex(g);
 
-        // Keep track of the number of vertices (columns / cells) in the previous row.
-        int prevCols = 1;
-
-        const auto rowHeight = 1.0 / radius;
-        std::cout << "rowHeight=" << rowHeight << std::endl;
-
         for (auto row = 1; row < radius; ++row) {
-            // Determine the number of cells we want in this row. Their size should be as close as possible to the
-            // number of cells in the previous row: we branch if it is not.
-            const auto innerRadius = row * rowHeight;
-            const auto innerCircumference = 2 * M_PI * innerRadius;
-            const auto estimatedCellWidth = innerCircumference / prevCols;
-            const auto ratio = static_cast<int>(std::round(estimatedCellWidth / rowHeight));
-            const auto cols = prevCols * ratio;
-            std::cout << "innerR=" << innerRadius << std::endl;
-            std::cout << "innerC=" << innerCircumference << std::endl;
-            std::cout << "estCellWidth=" << estimatedCellWidth << std::endl;
-            std::cout << "ratio=" << ratio << std::endl;
-            std::cout << "cols=" << cols << std::endl << std::endl;
-
             // Add the cells for this row.
+            const int cols = ringSizes[row];
             for (int col = 0; col < cols; ++col)
                 ranker[std::make_pair(row, col)] = boost::add_vertex(g);
 
             // Now add the adjacencies.
             // The ratio, which is integral, dictates the number of columns in this row per column of the previous
             // row, so we use this to dictate parental adjacency.
+            const auto ratio = cols / ringSizes[row-1];
+
             for (int col = 0; col < cols; ++col) {
+                const vertex v = ranker[std::make_pair(row, col)];
+
                 // As we are undirected, we only need to connect to our clockwise neighbour.
                 int nextCol = (col + 1) % cols;
-                boost::add_edge(ranker[std::make_pair(row, col)], ranker[std::make_pair(row, nextCol)], g);
+                const vertex vn = ranker[std::make_pair(row, nextCol)];
+                const EdgeInfo ein { v, types::Direction::CLOCKWISE, vn, types::Direction::COUNTERCLOCKWISE };
+                boost::add_edge(v, vn, ein, g);
 
-                // The parent vertex is the one in the previous row where col / ratio, as there are ratio vertices
-                // in this row for each vertex in the previous row.
-                boost::add_edge(ranker[std::make_pair(row, col)], ranker[std::make_pair(row-1, col / ratio)], g);
+                // Connect to the parent.
+                const vertex vp = ranker[std::make_pair(row - 1, col / ratio)];
+                const EdgeInfo eip { v, types::Direction::IN, vp, types::Direction::OUT };
+                boost::add_edge(v, vp, eip, g);
             }
-
-            prevCols = cols;
         }
 
         return g;
@@ -146,9 +250,8 @@ namespace spelunker::graphmaze {
         assert(numEdges == numVertices(graph) - 1);
     }
 
-    // TODO: Fix this up.
     vertex GraphUtils::randomStartVertex(const MazeGraph &maze) noexcept {
-        return 0;
+        return math::DefaultRNG::randomRange(numVertices(maze));
     }
 
     static VertexCollection nbrs(const MazeSeed &seed, const vertex &v, const bool visited) {
@@ -167,6 +270,14 @@ namespace spelunker::graphmaze {
 
     VertexCollection GraphUtils::visitedNeighbours(const MazeSeed &seed, const vertex &v) {
         return nbrs(seed, v, true);
+    }
+
+    void GraphUtils::addEdge(vertex v1, vertex v2, MazeSeed &seed) {
+        // Get the edge properties from the template.
+        auto edge = boost::edge(v1, v2, seed.tmplt);
+        auto edgeInfo = boost::get(EdgeInfoPropertyTag(), seed.tmplt, edge.first);
+        std::cout << "Adding edge!" << std::endl;
+        boost::add_edge(v1, v2, edgeInfo, seed.maze);
     }
 
     VertexCollection GraphUtils::neighbours(const MazeSeed &seed, const vertex &v) {

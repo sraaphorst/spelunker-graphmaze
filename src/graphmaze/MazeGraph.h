@@ -7,12 +7,40 @@
 #pragma once
 
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/properties.hpp>
 
 #include <map>
+#include <functional>
+#include <optional>
+#include <set>
+#include <stdexcept>
 #include <tuple>
 #include <vector>
 
+#include <typeclasses/Show.h>
+#include <types/Direction.h>
+
 namespace spelunker::graphmaze {
+    /**
+     * Forward declarations of MazeGraph to get vertex_descriptor.
+     */
+    struct VertexInfo;
+    struct EdgeInfo;
+    struct GraphInfo;
+
+    struct VertexInfoPropertyTag {
+        using kind = boost::vertex_property_tag;
+        static const std::size_t num;
+    };
+
+    struct EdgeInfoPropertyTag {
+        using kind = boost::edge_property_tag;
+        static const std::size_t num;
+    };
+
+    using vertex_info_prop_type = boost::property<VertexInfoPropertyTag, VertexInfo>;
+    using edge_info_prop_type = boost::property<EdgeInfoPropertyTag, EdgeInfo>;
+
     /**
      * To represent a potential maze for building, we have vertices
      * and we have edges. We want to derive, for a perfect maze, a
@@ -20,10 +48,53 @@ namespace spelunker::graphmaze {
      * like braiding to increase the complexity.
      */
     using MazeGraph = boost::adjacency_list<
-            boost::setS, boost::vecS, boost::undirectedS>;
+            boost::setS, boost::vecS, boost::undirectedS, vertex_info_prop_type, edge_info_prop_type, GraphInfo>;
 
     /// Alias for vertices of MazeGraph.
     using vertex = MazeGraph::vertex_descriptor;
+
+    /// Alias for edges of MazeGraph.
+    using edge = MazeGraph::edge_descriptor;
+
+    /**
+     * Vertex properties. A vertex can have a type to indicate its shape or orientation, which is graph-dependent.
+     * Examples include some types of omega (graph with non-orthogonal tessellation) graphs, such as:
+     * 1. Delta (triangular) graphs, where each triangle has an orientation;
+     * 2. Upsilon graphs, where the cells comprise octagons and squares.
+     * The type should be uniquely interpreted by the graph.
+     */
+    struct VertexInfo {
+        int type;
+    };
+
+    /**
+     * Edge properties. We want to have some notion of "direction" associated with edges.
+     * We maintain two pairs, each consisting of a vertex of the edge and the direction the edge represents to reach the
+     * other endpoint. This thus contains some redundant information, but we include it for completeness. If may be
+     * possible to exploit it in some way to produce interesting effects.
+     */
+     struct EdgeInfo {
+        vertex v1;
+        types::Direction d1;
+        vertex v2;
+        types::Direction d2;
+     };
+
+     /**
+      * Graph properties. These consist of several fundamental properties of the graph that allow us to use or not
+      * use certain algorithms. For example, to use the binary tree algorithm, we need to specify directions based
+      * on the vertex type for the algorithm to choose from.
+      */
+     using BTCandidateFunction = std::function<std::set<types::Direction>(vertex)>;
+     struct GraphInfo {
+         GraphInfo(const bool isOrthogonal, const BTCandidateFunction &binaryTreeCandidates)
+            : isOrthogonal{isOrthogonal}, binaryTreeCandidates{binaryTreeCandidates} {};
+         explicit GraphInfo(const bool isOrthogonal = false)
+            : isOrthogonal(isOrthogonal), binaryTreeCandidates{} {}
+
+         std::optional<BTCandidateFunction> binaryTreeCandidates;
+         const bool isOrthogonal;
+     };
 
     /// A collection of vertices.
     using VertexCollection = std::vector<vertex>;

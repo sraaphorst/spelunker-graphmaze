@@ -11,6 +11,8 @@
 #include <stack>
 #include <vector>
 
+#include <math/RNG.h>
+
 #include "GraphUtils.h"
 #include "MazeGraph.h"
 #include "MazeGenerator.h"
@@ -30,18 +32,20 @@ namespace spelunker::graphmaze {
 
         // Continue until we have visited all the cells.
         while (visitedCells < seed.numVertices) {
+            std::cout << "Visited=" << visitedCells << " of " << seed.numVertices << std::endl;
             // Get all the neighbours of the current cell and move to one at random.
             const auto nbrs = GraphUtils::neighbours(seed, v);
 
             // Select an unvisited neighbour at random.
-            // TODO: Improve randomization.
-            const int idx = rand() % nbrs.size();
-            const auto nxt = nbrs[idx];
+            const auto nxt = math::RNG::randomElement(nbrs);
 
             if (seed.unvisited[nxt]) {
                 seed.unvisited[nxt] = false;
                 ++visitedCells;
-                boost::add_edge(v, nxt, seed.maze);
+                std::cout << "Making edge: " << v << " -> " << nxt << std::endl;
+                GraphUtils::addEdge(v, nxt, seed);
+                auto [ei, ee] = boost::edges(seed.maze);
+                std::cout << "Now: " << std::distance(ei, ee) << " edges." << std::endl;
             }
             v = nxt;
         }
