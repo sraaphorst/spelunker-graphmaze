@@ -1,3 +1,9 @@
+/**
+ * binary_tree.cpp
+ *
+ * By Sebastian Raaphorst, 2018.
+ */
+
 #include <cassert>
 #include <iostream>
 #include <tuple>

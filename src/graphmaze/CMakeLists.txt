@@ -10,6 +10,7 @@ set(_GRAPHMAZE_PUBLIC_HEADER_FILES
         HuntAndKillMazeGenerator.h
         MazeGraph.h
         MazeGenerator.h
+        StringGridMazeRenderer.h
         PARENT_SCOPE
         )
 
@@ -25,5 +26,6 @@ set(_GRAPHMAZE_SOURCE_FILES
         GraphUtils.cpp
         HuntAndKillMazeGenerator.cpp
         MazeGraph.cpp
+        StringGridMazeRenderer.cpp
         PARENT_SCOPE
         )

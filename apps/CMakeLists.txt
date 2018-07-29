@@ -1,10 +1,6 @@
 # CMakeLists.txt
 # By Sebastian Raaphorst, 2018.
 
-message("Starting compilation of graphmaze...")
-message("Done")
-
-message("Starting compilation of apps...")
 add_executable(dfs dfs.cpp)
 target_link_libraries(dfs LINK_PUBLIC spelunker_graphmaze)
 
@@ -20,4 +16,6 @@ target_link_libraries(binary_tree LINK_PUBLIC spelunker_graphmaze)
 add_executable(hunt_and_kill hunt_and_kill.cpp)
 target_link_libraries(hunt_and_kill LINK_PUBLIC spelunker_graphmaze)
 
-message("Done")
+configure_file(mask.txt mask.txt COPYONLY)
+add_executable(grid_mask grid_mask.cpp)
+target_link_libraries(grid_mask LINK_PUBLIC spelunker_graphmaze)

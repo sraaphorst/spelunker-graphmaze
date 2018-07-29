@@ -1,3 +1,9 @@
+/**
+ * aldous_broder.cpp
+ *
+ * By Sebastian Raaphorst, 2018.
+ */
+
 #include <cassert>
 #include <iostream>
 #include <tuple>

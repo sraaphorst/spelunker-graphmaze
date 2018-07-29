@@ -64,6 +64,9 @@ namespace spelunker::graphmaze {
     /// Alias for edges of MazeGraph.
     using edge = MazeGraph::edge_descriptor;
 
+    /// A grid ranker map used to map (x,y) coordinates into vertices.
+    using GridRankerMap = std::map<std::pair<int, int>, vertex>;
+
     /**
      * Vertex properties. A vertex can have a type to indicate its shape or orientation, which is graph-dependent.
      * Examples include some types of omega (graph with non-orthogonal tessellation) graphs, such as:
@@ -95,11 +98,17 @@ namespace spelunker::graphmaze {
       */
      using BTCandidateFunction = std::function<std::set<types::Direction>(int)>;
      struct GraphInfo {
-         GraphInfo(const bool isOrthogonal, const BTCandidateFunction &binaryTreeCandidates)
-            : isOrthogonal{isOrthogonal}, binaryTreeCandidates{binaryTreeCandidates} {};
+         GraphInfo(const bool isOrthogonal,
+                 const BTCandidateFunction &binaryTreeCandidates,
+                 const GridRankerMap &gridRankerMap)
+            : isOrthogonal{isOrthogonal},
+              binaryTreeCandidates{binaryTreeCandidates},
+              gridRankerMap{gridRankerMap} {};
+
          explicit GraphInfo(const bool isOrthogonal = false)
             : isOrthogonal(isOrthogonal), binaryTreeCandidates{} {}
 
+         std::optional<GridRankerMap> gridRankerMap;
          std::optional<BTCandidateFunction> binaryTreeCandidates;
          const bool isOrthogonal;
      };

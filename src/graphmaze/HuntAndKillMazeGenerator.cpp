@@ -4,6 +4,8 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <math/RNG.h>
+
 #include "GraphUtils.h"
 #include "HuntAndKillMazeGenerator.h"
 #include "MazeGraph.h"
@@ -31,9 +33,8 @@ namespace spelunker::graphmaze {
                     continue;
                 }
 
-                // TODO: improve randomization.
-                const auto visitedNbr = visitedNbrs[rand() % visitedNbrs.size()];
-                boost::add_edge(v, visitedNbr, seed.maze);
+                const auto visitedNbr = math::RNG::randomElement(visitedNbrs);
+                GraphUtils::addEdge(v, visitedNbr, seed);
 
             } else if (!firstRun) {
                 // Otherwise we were at an already processed cell, so advance.
@@ -50,9 +51,8 @@ namespace spelunker::graphmaze {
                 if (unvisitedNbrs.empty())
                     break;
 
-                // TODO: improve randomization
-                const auto unvisitedNbr = unvisitedNbrs[rand() % unvisitedNbrs.size()];
-                boost::add_edge(v, unvisitedNbr, seed.maze);
+                const auto unvisitedNbr = math::RNG::randomElement(unvisitedNbrs);
+                GraphUtils::addEdge(v, unvisitedNbr, seed);
 
                 v = unvisitedNbr;
                 seed.unvisited[v] = false;

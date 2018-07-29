@@ -8,6 +8,8 @@
 
 #include <stack>
 
+#include <math/RNG.h>
+
 #include "GraphUtils.h"
 #include "MazeGraph.h"
 #include "MazeGenerator.h"
@@ -32,12 +34,10 @@ namespace spelunker::graphmaze {
             }
 
             // Select an unvisited neighbour at random.
-            // TODO: Improve randomization.
-            const int idx = rand() % uNbrs.size();
-            const auto nxt = uNbrs[idx];
+            const auto nxt = math::RNG::randomElement(uNbrs);
 
             // Add the wall from start to nxt to the output maze.
-            const auto [e, success] = boost::add_edge(start, nxt, seed.maze);
+            GraphUtils::addEdge(start, nxt, seed);
 
             // Enqueue nxt and loop.
             stack.push(nxt);

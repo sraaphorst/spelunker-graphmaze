@@ -1,0 +1,16 @@
+MMMMMMMM               MMMMMMMM               AAA               ZZZZZZZZZZZZZZZZZZZEEEEEEEEEEEEEEEEEEEEEE
+M:::::::M             M:::::::M              A:::A              Z:::::::::::::::::ZE::::::::::::::::::::E
+M::::::::M           M::::::::M             A:::::A             Z:::::::::::::::::ZE::::::::::::::::::::E
+M:::::::::M         M:::::::::M            A:::::::A            Z:::ZZZZZZZZ:::::Z EE::::::EEEEEEEEE::::E
+M::::::::::M       M::::::::::M           A:::::::::A           ZZZZZ     Z:::::Z    E:::::E       EEEEEE
+M:::::::::::M     M:::::::::::M          A:::::A:::::A                  Z:::::Z      E:::::E
+M:::::::M::::M   M::::M:::::::M         A:::::A A:::::A                Z:::::Z       E::::::EEEEEEEEEE
+M::::::M M::::M M::::M M::::::M        A:::::A   A:::::A              Z:::::Z        E:::::::::::::::E
+M::::::M  M::::M::::M  M::::::M       A:::::A     A:::::A            Z:::::Z         E:::::::::::::::E
+M::::::M   M:::::::M   M::::::M      A:::::AAAAAAAAA:::::A          Z:::::Z          E::::::EEEEEEEEEE
+M::::::M    M:::::M    M::::::M     A:::::::::::::::::::::A        Z:::::Z           E:::::E
+M::::::M     MMMMM     M::::::M    A:::::AAAAAAAAAAAAA:::::A    ZZZ:::::Z     ZZZZZ  E:::::E       EEEEEE
+M::::::M               M::::::M   A:::::A             A:::::A   Z::::::ZZZZZZZZ:::ZEE::::::EEEEEEEE:::::E
+M::::::M               M::::::M  A:::::A               A:::::A  Z:::::::::::::::::ZE::::::::::::::::::::E
+M::::::M               M::::::M A:::::A                 A:::::A Z:::::::::::::::::ZE::::::::::::::::::::E
+MMMMMMMM               MMMMMMMMAAAAAAA                   AAAAAAAZZZZZZZZZZZZZZZZZZZEEEEEEEEEEEEEEEEEEEEEE
