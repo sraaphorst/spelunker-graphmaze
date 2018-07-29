@@ -3,7 +3,7 @@
  *
  * By Sebastian Raaphorst, 2018.
  */
- 
+
 #include <boost/graph/adjacency_list.hpp>
 
 #include <ostream>
@@ -19,7 +19,7 @@ namespace spelunker::graphmaze {
     StringGridMazeRenderer::StringGridMazeRenderer(std::ostream &o) : out(o) {}
 
     bool StringGridMazeRenderer::wall(const MazeGraph &m, int x, int y, int w, int h, types::Direction d) {
-        if (x < 0 || x >= w)  return false;
+        if (x < 0 || x >= w) return false;
         if (y < 0 || y >= h) return false;
 
         const auto &ranker = m.m_property.get()->m_value.gridRankerMap.value();
@@ -54,14 +54,17 @@ namespace spelunker::graphmaze {
          * 4. B(x,y,E) = M(  x, y-1, S) || M(  x,   y, N)
          */
         const auto &ranker = m.m_property.get()->m_value.gridRankerMap.value();
+
+        // Calculate the width and height.
         int w = 0;
         int h = 0;
         for (auto iter = ranker.begin(); iter != ranker.end(); ++iter) {
-            const auto k = iter->first;
-            if (k.first > w) w = k.first;
-            if (k.second > h) h = k.second;
+            const auto [ix, iy] = iter->first;
+            if (ix > w) w = ix;
+            if (iy > h) h = iy;
         }
-        ++w; ++h;
+        ++w;
+        ++h;
 
         // Create the box representation of the maze.
         using BoxEntry = std::vector<bool>;

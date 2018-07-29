@@ -60,6 +60,15 @@ namespace spelunker::graphmaze {
             cells.emplace_back(row);
         }
 
+        // Remove heading and trailing rows of length 0.
+        while (cells.back().empty())
+            cells.pop_back();
+
+        // We want all rows to be the same length.
+        auto maxwidth = std::max_element(cells.cbegin(), cells.cend(),
+                [](const auto &r, const auto &s) { return r.size() < s.size(); })->size();
+        std::for_each(cells.begin(), cells.end(), [maxwidth](auto &r) { r.resize(maxwidth, false); });
+
         const auto binaryTreeFunc = [](int) {
             return std::set<types::Direction>{ types::Direction::EAST, types::Direction::SOUTH };
         };
