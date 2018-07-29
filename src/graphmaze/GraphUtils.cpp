@@ -50,16 +50,9 @@ namespace spelunker::graphmaze {
      * @param ylooped true if the graph wraps around the y-axis, be it reversed or not
      * @return
      */
-    static BTCandidateFunction makeGridFunction(const int width, const int height,
-                                                const bool xlooped, const bool ylooped) {
-        return [width, height, xlooped, ylooped](vertex v) {
-            const auto x = v % height;
-            const auto y = v / height;
-            std::set<types::Direction> dirs;
-
-            if (xlooped || x < width - 1)  dirs.insert(types::Direction::EAST);
-            if (ylooped || y < height - 1) dirs.insert(types::Direction::SOUTH);
-            return dirs;
+    static BTCandidateFunction makeGridFunction() {
+        return [](int) {
+            return std::set<types::Direction>{ types::Direction::EAST, types::Direction::SOUTH };
         };
     }
 
@@ -91,9 +84,7 @@ namespace spelunker::graphmaze {
                                    const types::AxialOrientation xorientation,
                                    const types::AxialOrientation yorientation) {
 
-        MazeGraph g{GraphInfo{true, makeGridFunction(width, height,
-                                                           xorientation != types::AxialOrientation::DISCONNECTED,
-                                                           yorientation != types::AxialOrientation::DISCONNECTED)}};
+        MazeGraph g{GraphInfo{true, makeGridFunction()}};
 
         for (auto y = 0; y < height; ++y)
             for (auto x = 0; x < width; ++x) {
@@ -147,15 +138,13 @@ namespace spelunker::graphmaze {
         return g;
     }
 
-    static BTCandidateFunction makeCircularFunction(const std::vector<int> &sizes) {
-        // We always allow OUT and CLOCKWISE unless not possible.
-        // Determine the number of cells not in the last row.
-        int cellCount = std::accumulate(sizes.cbegin(), sizes.cend() - 1, 0);
-        return [sizes, cellCount](vertex v) {
-            std::set<types::Direction> dirs;
-            if (v <= cellCount) dirs.insert(types::Direction::OUT);
-            if (v > 0) dirs.insert(types::Direction::CLOCKWISE);
-            return dirs;
+//    MazeGraph GraphUtils::makeGridFromMask(std::istream &str) {
+//
+//    }
+
+    static BTCandidateFunction makeCircularFunction() {
+        return [](int) {
+            return std::set<types::Direction>{types::Direction::OUT, types::Direction::CLOCKWISE};
         };
     }
 
@@ -187,7 +176,7 @@ namespace spelunker::graphmaze {
     MazeGraph GraphUtils::makeCircular(int radius) {
         // Calculate the ring sizes and create the binary tree function.
         const auto ringSizes = calculateRingSizes(radius);
-        const auto circularFunction = makeCircularFunction(ringSizes);
+        const auto circularFunction = makeCircularFunction();
 
         MazeGraph g{GraphInfo{false, circularFunction}};
 
@@ -228,17 +217,11 @@ namespace spelunker::graphmaze {
         return g;
     }
 
-    static BTCandidateFunction makeSphericalFunction(int numCells) {
+    static BTCandidateFunction makeSphericalFunction() {
         // We always allow SOUTH and EAST unless not possible, which occurs in the cases of the two poles.
         // Fron the north pole, we can only go south, and from the south pole, we cannot go anywhere.
-        return [numCells](vertex v) {
-            std::set<types::Direction> dirs;
-            if (v < numCells - 1) {
-                dirs.insert(types::Direction::SOUTH);
-                if (v > 0)
-                    dirs.insert(types::Direction::EAST);
-            }
-            return dirs;
+        return [](int) {
+            return std::set<types::Direction>{types::Direction::SOUTH, types::Direction::EAST};
         };
     }
 
@@ -254,7 +237,7 @@ namespace spelunker::graphmaze {
 
         // Calculate the total number of cells, being careful not to count the equator twice.
         const auto numCells = 2 * std::accumulate(ringSizes.cbegin(), ringSizes.cend(), 0) - (diameter % 2) * ringSizes.back();
-        const auto sphericalFunction = makeSphericalFunction(numCells);
+        const auto sphericalFunction = makeSphericalFunction();
 
         MazeGraph g{GraphInfo{false, sphericalFunction}};
 
@@ -314,11 +297,13 @@ namespace spelunker::graphmaze {
             for (int col = 0; col < cols; ++col) {
                 const vertex v = ranker[std::make_pair(curRow, col)];
 
-                // Link east.
-                int nextCol = (col + 1) % cols;
-                const vertex ve = ranker[std::make_pair(curRow, nextCol)];
-                const EdgeInfo eie { v, types::Direction::EAST, ve, types::Direction::WEST };
-                boost:add_edge(v, ve, eie, g);
+                // Link east if we aren't at the south pole.
+                if (southRow > 0) {
+                    int nextCol = (col + 1) % cols;
+                    const vertex ve = ranker[std::make_pair(curRow, nextCol)];
+                    const EdgeInfo eie{v, types::Direction::EAST, ve, types::Direction::WEST};
+                    boost::add_edge(v, ve, eie, g);
+                }
 
                 // Link north.
                 for (int i = 0; i < ratio; ++i) {
@@ -348,8 +333,8 @@ namespace spelunker::graphmaze {
     }
 
     void GraphUtils::outputGraph(std::ostream &out, const MazeGraph &graph) {
-        for (auto[viter, vend] = boost::vertices(graph); viter != vend; ++viter)
-            std::cout << "Vertex " << *viter << std::endl;
+//        for (auto[viter, vend] = boost::vertices(graph); viter != vend; ++viter)
+//            std::cout << "Vertex " << *viter << std::endl;
         for (auto[eiter, eend] = boost::edges(graph); eiter != eend; ++eiter)
             std::cout << "Edge " << *eiter << std::endl;
 

@@ -54,7 +54,9 @@ namespace spelunker::graphmaze {
      * like braiding to increase the complexity.
      */
     using MazeGraph = boost::adjacency_list<
-            boost::setS, boost::vecS, boost::undirectedS, vertex_info_prop_type, edge_info_prop_type, GraphInfo>;
+            boost::setS, boost::vecS, boost::undirectedS,
+            vertex_info_prop_type, edge_info_prop_type, graph_info_prop_type
+            >;
 
     /// Alias for vertices of MazeGraph.
     using vertex = MazeGraph::vertex_descriptor;
@@ -90,10 +92,8 @@ namespace spelunker::graphmaze {
       * Graph properties. These consist of several fundamental properties of the graph that allow us to use or not
       * use certain algorithms. For example, to use the binary tree algorithm, we need to specify directions based
       * on the vertex type for the algorithm to choose from.
-      * TODO: We should probably encompass the concept of column and row here.
-      * TODO: For spaces like Klein bottle, a "row" should encompass both rows that are contiguous.
       */
-     using BTCandidateFunction = std::function<std::set<types::Direction>(vertex)>;
+     using BTCandidateFunction = std::function<std::set<types::Direction>(int)>;
      struct GraphInfo {
          GraphInfo(const bool isOrthogonal, const BTCandidateFunction &binaryTreeCandidates)
             : isOrthogonal{isOrthogonal}, binaryTreeCandidates{binaryTreeCandidates} {};

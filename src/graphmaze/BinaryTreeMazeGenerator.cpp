@@ -21,16 +21,19 @@ namespace spelunker::graphmaze {
 
         // Make sure that we have a binary tree function, which is needed to pick carving directions.
         // TODO: There has to be a nicer way to get the graph property than this mess.
-        if (!tmplt.m_property.get()->binaryTreeCandidates.has_value())
+        if (!tmplt.m_property.get()->m_value.binaryTreeCandidates.has_value())
             throw types::UnsupportedMazeGeneration();
-        auto directionFn = tmplt.m_property.get()->binaryTreeCandidates.value();
+        auto directionFn = tmplt.m_property.get()->m_value.binaryTreeCandidates.value();
 
         // Start at vertex 0 and just keep carving, forcing carving into new
         // cells.
         for (int v=0; v < seed.numVertices; ++v) {
-            // Get a list of directions in which we can carve and filter
-            // that to get a list of unvisited vertices that are candidates.
-            auto directions = directionFn(v);
+            // Get the vertex type.
+            const auto vi = boost::get(VertexInfoPropertyTag(), tmplt, v);
+
+            // Get a list of directions in which we can carve and filter that to get a list of unvisited vertices
+            // that are candidates.
+            auto directions = directionFn(vi.type);
             std::vector< vertex > candidates;
 
             for (auto [eIter, eEnd] = boost::out_edges(v, tmplt); eIter != eEnd; ++eIter) {
@@ -39,6 +42,8 @@ namespace spelunker::graphmaze {
                 if (!seed.unvisited[target])
                     continue;
 
+                // Check if this edge contains a direction allowed by our binary tree function for this
+                // vertex type.
                 const auto ei  = boost::get(EdgeInfoPropertyTag(), tmplt, *eIter);
                 const auto dir = v == ei.v1 ? ei.d1 : ei.d2;
                 if (directions.find(dir) != directions.end())

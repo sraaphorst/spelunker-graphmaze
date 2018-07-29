@@ -31,6 +31,20 @@ namespace spelunker::graphmaze {
         static MazeGraph makeProjectivePlane(int width, int height);
 
         /**
+         * Create a grid from a mask as read by a stream.
+         * Cells should be indicated with a #, so for example:
+         *
+         * ##  ##
+         *  ####
+         * ##  ##
+         *
+         * would give us a 6x3 maze with 6 holes and 12 cells.
+         * @param str the stream containing the mask
+         * @return the graph representing this
+         */
+        //static MazeGraph makeGridFromMask(std::istream &str);
+
+        /**
          * Create a circular maze of radius rings, and uses adaptive subdivision to divide the rings
          * into cells, with the goal of keeping the cell width approximately the same as the cell height.
          * @param radius indicates the number of rings in the circle
