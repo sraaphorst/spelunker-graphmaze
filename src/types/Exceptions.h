@@ -59,6 +59,12 @@ namespace spelunker::types {
     /// Thrown if the user tries to apply a maze generation technique on a graph that does not support it.
     class UnsupportedMazeGeneration : public Exception {
     public:
-        UnsupportedMazeGeneration() : Exception("Illegal maze generation operation attempted") {}
+        UnsupportedMazeGeneration() : Exception("Illegal maze generation operation attempted.") {}
+    };
+
+    /// Thrown if the user tries to generate a template that is not supported.
+    class UnsupportedTemplateGeneration : public Exception {
+    public:
+        UnsupportedTemplateGeneration() : Exception("Illegal template generation operation attempted.") {}
     };
 }
