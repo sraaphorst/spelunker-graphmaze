@@ -9,7 +9,8 @@
  * carve in the second direction.
  *
  * This algorithm only works with a very specific subset of graphs:
- * 1. It works identically for grids, cylinders, and toruses.
+ * 1. It works identically for grids, cylinders, and toruses, including with grids with masks, although some vertices
+ *    may be isolated in this case, as they have no east or south neighbours.
  * 2. It works for circles and spheres.
  * 3. It does NOT work for mobius strips, Klein bottles, or projective planes.
  */

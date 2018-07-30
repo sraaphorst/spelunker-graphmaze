@@ -251,6 +251,105 @@ namespace spelunker::graphmaze {
         return g;
     }
 
+    MazeGraph GraphUtils::makeOctogonal(int width, int height,
+            types::AxialOrientation xorientation, types::AxialOrientation yorientation) {
+        // In the binary tree func, 0 is an octagon, and 1 is a diamond.
+        const auto binaryTreeFunc = [](int type) {
+            switch (type) {
+                case 0:
+                    return std::deque<types::Direction>{ types::Direction::EAST, types::Direction::SOUTH, types::Direction::SOUTHEAST};
+                case 1:
+                    return std::deque<types::Direction>{ types::Direction::SOUTHEAST };
+            }
+        };
+
+        MazeGraph g{GraphInfo{true, binaryTreeFunc, {}}};
+        GridRankerMap octagonalRanker;
+        GridRankerMap diamondRanker;
+
+        for (auto y = 0; y < height; ++y)
+            for (auto x = 0; x < width; ++x) {
+                VertexInfo vi { 0 };
+                octagonalRanker[{x, y}] = boost::add_vertex(vi, g);
+            }
+
+        const auto diamondWidth = width - (xorientation == types::AxialOrientation::DISCONNECTED ? 1 : 0);
+        const auto diamondHeight = height - (yorientation == types::AxialOrientation::DISCONNECTED ? 1 : 0);
+        for (auto y = 0; y < diamondWidth; ++y)
+            for (auto x = 0; x < diamondHeight; ++x) {
+                VertexInfo vi { 1 };
+                diamondRanker[{x, y}] = boost::add_vertex(vi, g);
+            }
+
+        // Add all the octagonal - octagonal edges.
+        for (auto y = 0; y < height; ++y)
+            for (auto x = 0; x < width; ++x) {
+                const auto v1 = octagonalRanker[{x, y}];
+
+                // NORTH
+                if (y > 0 || yorientation != types::AxialOrientation::DISCONNECTED) {
+                    vertex v2;
+                    if (y - 1 >= 0) v2 = octagonalRanker[{x, y - 1}];
+                    else v2 = octagonalRanker[{yorientation == types::AxialOrientation::LOOPED ? x : width - x - 1, height - 1}];
+                    EdgeInfo ei{v1, types::Direction::NORTH, v2, types::Direction::SOUTH};
+                    boost::add_edge(v1, v2, ei, g);
+                }
+
+                // SOUTH
+                if (y < width || yorientation != types::AxialOrientation::DISCONNECTED) {
+                    vertex v2;
+                    if (y + 1 < height) v2 = octagonalRanker[{x, y + 1}];
+                    else v2 = octagonalRanker[{yorientation == types::AxialOrientation::LOOPED ? x : width - x - 1, 0}];
+                    EdgeInfo ei{v1, types::Direction::SOUTH, v2, types::Direction::NORTH};
+                    boost::add_edge(v1, v2, ei, g);
+                }
+
+                // EAST
+                if (x < width - 1 || xorientation != types::AxialOrientation::DISCONNECTED) {
+                    vertex v2;
+                    if (x + 1 < width) v2 = octagonalRanker[{x + 1, y}];
+                    else v2 = octagonalRanker[{0, xorientation == types::AxialOrientation::LOOPED ? y : height - y - 1}];
+                    EdgeInfo ei{v1, types::Direction::EAST, v2, types::Direction::WEST};
+                    boost::add_edge(v1, v2, ei, g);
+                }
+
+                // WEST
+                if (x > 0 || xorientation != types::AxialOrientation::DISCONNECTED) {
+                    vertex v2;
+                    if (x - 1 >= 0) v2 = octagonalRanker[{x - 1, y}];
+                    else v2 = octagonalRanker[{width - 1, xorientation == types::AxialOrientation::LOOPED ? y : height - y - 1}];
+                    EdgeInfo ei{v1, types::Direction::WEST, v2, types::Direction::EAST};
+                    boost::add_edge(v1, v2, ei, g);
+                }
+            }
+
+        // Add all the diamond - octagonal edges.
+        // This is slightly more complicated, because:
+        // 1. We can always add the edges; and
+        // 2. The width and height of the diamonds change depending on the axial orientation, with an extra row on
+        //    the east and the south if not disconnected.
+        for (auto y = 0; y < diamondHeight; ++y)
+            for (auto x = 0; x < diamondWidth; ++x) {
+                const auto v1 = diamondRanker[{x, y}];
+
+                // NORTHWEST
+                const auto vnw = octagonalRanker[{x, y}];
+                EdgeInfo einw{ v1, types::Direction::NORTHWEST, vnw, types::Direction::SOUTHEAST};
+
+                // NORTHEAST
+                vertex vne;
+                if (x + 1 == diamondWidth && xorientation != types::AxialOrientation::DISCONNECTED)
+                    vne = octagonalRanker[{0, xorientation == types::AxialOrientation::LOOPED ? y : height - y - 1}];
+                else vne = octagonalRanker[{x + 1, y}];
+                EdgeInfo eine{v1, types::Direction::NORTHEAST, vne, types::Direction::SOUTHWEST};
+
+                // SOUTHWEST
+                vertex vsw;
+                if (y + 1 == diamondHeight && yorientation != types::AxialOrientation::DISCONNECTED)
+                    vsw = octagonalRanker[{yorientation == types::AxialOrientation::LOOPED ? x : width - x - 1, y}];
+            }
+    }
+
     MazeSeed GraphUtils::makeSeed(const MazeGraph &tmplt) noexcept {
         return MazeSeed {
             tmplt,

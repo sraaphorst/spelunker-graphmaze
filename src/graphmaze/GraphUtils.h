@@ -115,6 +115,25 @@ namespace spelunker::graphmaze {
         static MazeGraph makeSpherical(int diameter);
 
         /**
+         * Create a tiling of width by height octagonal tiles. Note that between each 2x2 configuration of octagonal
+         * tiles is a diamond tile, so there are tiles connected to octagonal tiles
+         * by NE, NW, SE, and SW. Thus, the final graph has:
+         * 1. width * height octagonal tiles;
+         * 2a. (width - 1) * (height - 1) diamond tiles if disconnected / disconnected;
+         * 2b. width * (height - 1) diamond tiles if not disconnected / disconnected;
+         * 2c. (width - 1) * height diamond tiles if disconnected / not disconnected;
+         * 2d. width * height diamond tiles if not disconnected / not disconnected.
+         * Omitting the diamond tiles would be equivalent to a regular grid.
+         * @param width the octagonal tile width
+         * @param height the octagonal tile height
+         * @param xorientation the
+         * @return the graph representing this
+         */
+        static MazeGraph makeOctogonal(int width, int height,
+                types::AxialOrientation xorientation = types::AxialOrientation::DISCONNECTED,
+                types::AxialOrientation yorientation = types::AxialOrientation::DISCONNECTED);
+
+        /**
          * Given a template for a maze, generate the seed for maze generation, which
          * contains all the information required by maze generators to generate complete meazes.
          * @param tmplt the maze template

@@ -18,6 +18,7 @@
 #include <graphmaze/BinaryTreeMazeGenerator.h>
 #include <graphmaze/DFSMazeGenerator.h>
 #include <graphmaze/HuntAndKillMazeGenerator.h>
+#include <graphmaze/SidewinderMazeGenerator.h>
 #include <graphmaze/StringGridMazeRenderer.h>
 
 using namespace spelunker::graphmaze;
@@ -34,7 +35,8 @@ int main() {
     //const auto maze = BFSMazeGenerator{}.generate(graph);
     //const auto maze = BinaryTreeMazeGenerator{}.generate(graph);
     //const auto maze = DFSMazeGenerator{}.generate(graph);
-    const auto maze = HuntAndKillMazeGenerator{}.generate(graph);
+    //const auto maze = HuntAndKillMazeGenerator{}.generate(graph);
+    const auto maze = SidewinderMazeGenerator{}.generate(graph);
 
     StringGridMazeRenderer r{std::cout};
     r.render(maze);
