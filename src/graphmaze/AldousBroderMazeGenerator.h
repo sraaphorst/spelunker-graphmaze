@@ -10,6 +10,7 @@
 #include "MazeGraph.h"
 
 namespace spelunker::graphmaze {
+
     class AldousBroderMazeGenerator final : public MazeGenerator {
     public:
         AldousBroderMazeGenerator() = default;

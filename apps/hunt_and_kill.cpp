@@ -9,11 +9,11 @@
 #include <tuple>
 #include <vector>
 
-#include "graphmaze/GraphUtils.h"
-#include "graphmaze/MazeGraph.h"
-#include "graphmaze/MazeGenerator.h"
-#include "graphmaze/HuntAndKillMazeGenerator.h"
-#include "graphmaze/StringGridMazeRenderer.h"
+#include <graphmaze/GraphUtils.h>
+#include <graphmaze/MazeGraph.h>
+#include <graphmaze/MazeGenerator.h>
+#include <graphmaze/HuntAndKillMazeGenerator.h>
+#include <graphmaze/StringGridMazeRenderer.h>
 
 using namespace spelunker::graphmaze;
 

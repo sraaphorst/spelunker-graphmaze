@@ -9,10 +9,10 @@
 
 #include <algorithm>
 #include <cmath>
+#include <deque>
 #include <iostream>
-#include <map>
-#include <set>
 #include <tuple>
+#include <vector>
 
 #include <math/DefaultRNG.h>
 #include <types/AxialOrientation.h>
@@ -70,7 +70,7 @@ namespace spelunker::graphmaze {
         std::for_each(cells.begin(), cells.end(), [maxwidth](auto &r) { r.resize(maxwidth, false); });
 
         const auto binaryTreeFunc = [](int) {
-            return std::set<types::Direction>{ types::Direction::EAST, types::Direction::SOUTH };
+            return std::deque<types::Direction>{ types::Direction::EAST, types::Direction::SOUTH };
         };
         MazeGraph g{GraphInfo{true, binaryTreeFunc, {}}};
 
@@ -107,7 +107,7 @@ namespace spelunker::graphmaze {
         // always allows us to carve OUT and CLOCKWISE.
         const auto ringSizes = calculateRingSizes(radius);
         const auto circularFunction = [](int) {
-            return std::set<types::Direction>{types::Direction::OUT, types::Direction::CLOCKWISE};
+            return std::deque<types::Direction>{types::Direction::CLOCKWISE, types::Direction::OUT};
         };
 
         MazeGraph g{GraphInfo{false, circularFunction, {}}};
@@ -163,7 +163,7 @@ namespace spelunker::graphmaze {
 
         // The binary tree spherical function allows us to always carve east and south.
         const auto sphericalFunction = [](int) {
-            return std::set<types::Direction>{types::Direction::SOUTH, types::Direction::EAST};
+            return std::deque<types::Direction>{types::Direction::EAST, types::Direction::SOUTH};
         };
 
         MazeGraph g{GraphInfo{false, sphericalFunction, {}}};
@@ -285,7 +285,7 @@ namespace spelunker::graphmaze {
         // Get the edge properties from the template.
         auto edge = boost::edge(v1, v2, seed.tmplt);
         auto edgeInfo = boost::get(EdgeInfoPropertyTag(), seed.tmplt, edge.first);
-        std::cout << "Edge: " << edgeInfo.v1 << " " << types::directionShortName(edgeInfo.d1) << " " << edgeInfo.v2 << " " << types::directionShortName(edgeInfo.d2) << std::endl;
+        std::cout << "Adding edge: " << edgeInfo.v1 << " " << types::directionShortName(edgeInfo.d1) << " " << edgeInfo.v2 << " " << types::directionShortName(edgeInfo.d2) << std::endl;
         boost::add_edge(v1, v2, edgeInfo, seed.maze);
     }
 
@@ -304,6 +304,11 @@ namespace spelunker::graphmaze {
 
         std::cout << v << " vertices, " << e << " edges" << std::endl;
         assert(e == v - 1);
+    }
+
+    std::optional<BTCandidateFunction> GraphUtils::getCandidateFunction(const MazeSeed &seed) {
+        // TODO: There has to be a nicer way to access this, but I don't know what it is.
+        return seed.tmplt.m_property.get()->m_value.binaryTreeCandidates;
     }
 
     VertexCollection GraphUtils::nbrs(const MazeSeed &seed, const vertex &v, const bool visited) {
@@ -341,7 +346,7 @@ namespace spelunker::graphmaze {
                                    const types::AxialOrientation xorientation,
                                    const types::AxialOrientation yorientation) {
         const auto binaryTreeFunc = [](int) {
-            return std::set<types::Direction>{ types::Direction::EAST, types::Direction::SOUTH };
+            return std::deque<types::Direction>{ types::Direction::EAST, types::Direction::SOUTH };
         };
         MazeGraph g{GraphInfo{true, binaryTreeFunc, {}}};
 

@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <map>
+#include <optional>
 #include <tuple>
 
 #include <types/AxialOrientation.h>
@@ -167,6 +168,15 @@ namespace spelunker::graphmaze {
          * @param graph the graph to output
          */
         static void outputGraph(std::ostream &out, const MazeGraph &graph);
+
+        /**
+         * Get the candidate function in the graph used by the binary tree and sidewinder
+         * algorithms to dictate directions at cells. This is an optional parameter, so
+         * none is returned if it does not exist.
+         * @param seed the maze seed
+         * @return the function as an optional
+         */
+        static std::optional<BTCandidateFunction> getCandidateFunction(const MazeSeed &seed);
 
     private:
         /**

@@ -10,6 +10,7 @@
 #include "MazeGraph.h"
 
 namespace spelunker::graphmaze {
+
     class BFSMazeGenerator final : public MazeGenerator{
     public:
         BFSMazeGenerator() = default;

@@ -10,6 +10,8 @@
  * It has been tested on the following and found to generate mazes:
  * 1. Grids, cylinders, toruses, mobius strips, Klein bottles, and projective planes; and
  * 2. Circles and spheres.
+ *
+ * It has been shown to fail on some mazes generated from masks.
  */
 
 #pragma once
@@ -18,6 +20,7 @@
 #include "MazeGraph.h"
 
 namespace spelunker::graphmaze {
+
     class BinaryTreeMazeGenerator final : public MazeGenerator {
     public:
         BinaryTreeMazeGenerator() = default;

@@ -28,14 +28,13 @@ using namespace spelunker::graphmaze;
  *    http://patorjk.com/software/taag/#p=display&f=Doh&t=MAZE
  */
 int main() {
-    std::ifstream str{"mask.txt"};
+    std::ifstream str{"mask2.txt"};
     const auto graph = GraphUtils::makeGridFromMask(str);
     //const auto maze = AldousBroderMazeGenerator{}.generate(graph);
     //const auto maze = BFSMazeGenerator{}.generate(graph);
     //const auto maze = BinaryTreeMazeGenerator{}.generate(graph);
     //const auto maze = DFSMazeGenerator{}.generate(graph);
     const auto maze = HuntAndKillMazeGenerator{}.generate(graph);
-    //GraphUtils::outputGraph(std::cout, maze);
 
     StringGridMazeRenderer r{std::cout};
     r.render(maze);

@@ -9,8 +9,9 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/properties.hpp>
 
-#include <map>
+#include <deque>
 #include <functional>
+#include <map>
 #include <optional>
 #include <set>
 #include <stdexcept>
@@ -94,9 +95,10 @@ namespace spelunker::graphmaze {
      /**
       * Graph properties. These consist of several fundamental properties of the graph that allow us to use or not
       * use certain algorithms. For example, to use the binary tree algorithm, we need to specify directions based
-      * on the vertex type for the algorithm to choose from.
+      * on the vertex type for the algorithm to choose from. For the sidewinder algorithm, we need these same
+      * directions, but with a specific order imposed on them: hence, the use of a deque.
       */
-     using BTCandidateFunction = std::function<std::set<types::Direction>(int)>;
+     using BTCandidateFunction = std::function<std::deque<types::Direction>(int)>;
      struct GraphInfo {
          GraphInfo(const bool isOrthogonal,
                  const BTCandidateFunction &binaryTreeCandidates,

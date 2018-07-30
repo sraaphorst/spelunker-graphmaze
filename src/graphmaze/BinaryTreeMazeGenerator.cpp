@@ -4,6 +4,7 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <deque>
 #include <vector>
 
 #include <math/RNG.h>
@@ -20,21 +21,21 @@ namespace spelunker::graphmaze {
         MazeSeed seed = GraphUtils::makeSeed(tmplt);
 
         // Make sure that we have a binary tree function, which is needed to pick carving directions.
-        // TODO: There has to be a nicer way to get the graph property than this mess.
-        if (!tmplt.m_property.get()->m_value.binaryTreeCandidates.has_value())
+        auto directionFnOpt = GraphUtils::getCandidateFunction(seed);
+        if (!directionFnOpt.has_value())
             throw types::UnsupportedMazeGeneration();
-        auto directionFn = tmplt.m_property.get()->m_value.binaryTreeCandidates.value();
+        auto directionFn = directionFnOpt.value();
 
         // Start at vertex 0 and just keep carving, forcing carving into new
         // cells.
-        for (int v=0; v < seed.numVertices; ++v) {
+        for (vertex v = 0; v < seed.numVertices; ++v) {
             // Get the vertex type.
             const auto vi = boost::get(VertexInfoPropertyTag(), tmplt, v);
 
             // Get a list of directions in which we can carve and filter that to get a list of unvisited vertices
             // that are candidates.
             auto directions = directionFn(vi.type);
-            std::vector< vertex > candidates;
+            std::vector<vertex> candidates;
 
             for (auto [eIter, eEnd] = boost::out_edges(v, tmplt); eIter != eEnd; ++eIter) {
                 // If we have already visited the target vertex, ignore.
@@ -46,7 +47,7 @@ namespace spelunker::graphmaze {
                 // vertex type.
                 const auto ei  = boost::get(EdgeInfoPropertyTag(), tmplt, *eIter);
                 const auto dir = v == ei.v1 ? ei.d1 : ei.d2;
-                if (directions.find(dir) != directions.end())
+                if (std::find(directions.cbegin(), directions.cend(), dir) != directions.cend())
                     candidates.emplace_back(target);
             }
 

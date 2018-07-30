@@ -11,11 +11,12 @@
 #include "MazeGraph.h"
 
 namespace spelunker::graphmaze {
-/**
- * Abstract case for a graph generator.
- * Given a MazeGraph and a subclass of this class, which embodies an
- * essential algorithm, derive a Maze.
- */
+
+    /**
+     * Abstract case for a graph generator.
+     * Given a MazeGraph and a subclass of this class, which embodies an
+     * essential algorithm, derive a Maze.
+     */
     class MazeGenerator {
     public:
         MazeGenerator() = default;

@@ -10,6 +10,7 @@
 #include "MazeGraph.h"
 
 namespace spelunker::graphmaze {
+
     /**
      * This is a MazeGenerator that works based on a randomized breadth first search.
      */

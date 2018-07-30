@@ -10,6 +10,7 @@
 #include "MazeGraph.h"
 
 namespace spelunker::graphmaze {
+
     class HuntAndKillMazeGenerator final : public MazeGenerator {
     public:
         HuntAndKillMazeGenerator() = default;
