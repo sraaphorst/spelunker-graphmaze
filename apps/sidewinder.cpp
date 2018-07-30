@@ -21,10 +21,10 @@ constexpr auto W = 50;
 constexpr auto H = 50;
 
 int main() {
-    MazeGraph grid = GraphUtils::makeGrid(W, H);
+    MazeGraph grid = GraphUtils::makeSpherical(11);
     const auto maze = SidewinderMazeGenerator{}.generate(grid);
     GraphUtils::outputGraph(std::cout, maze);
 
-    StringGridMazeRenderer r{std::cout};
-    r.render(maze);
+    //StringGridMazeRenderer r{std::cout};
+    //r.render(maze);
 }

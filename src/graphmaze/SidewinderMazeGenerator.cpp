@@ -55,14 +55,15 @@ namespace spelunker::graphmaze {
             // Check if any of the other directions are valid.
             // This is a bit complicated. This idea is:
             // Find if there is a direction (other than the first) in the direction list that
-            // leads to a valid cell. (If not, then the first direction is the only valid
+            // leads to a valid, unvisited cell. (If not, then the first direction is the only valid
             // direction, and we must follow it: this happens, for example, in the last row of
             // a grid, where we must only carve east since there are no southern cells).
             auto validDirs = std::find_if(dirs.cbegin(), dirs.cend(), [v, &seed](const auto d) {
                 auto [eIter, eEnd] = boost::out_edges(v, seed.tmplt);
                 return std::find_if(eIter, eEnd, [d, v, &seed](const auto e) {
                    const auto ei = boost::get(EdgeInfoPropertyTag(), seed.tmplt, e);
-                   return (ei.v1 == v && ei.d1 == d) || (ei.v2 == v && ei.d2 == d);
+                   return (ei.v1 == v && ei.d1 == d && seed.unvisited[ei.v2]) ||
+                          (ei.v2 == v && ei.d2 == d && seed.unvisited[ei.v1]);
                 }) != eEnd;
             }) != dirs.cend();
 
@@ -71,7 +72,8 @@ namespace spelunker::graphmaze {
                 auto [eIter, eEnd] = boost::out_edges(v, tmplt);
                 auto iter = std::find_if(eIter, eEnd, [v, dir, &seed](auto e) {
                    const auto ei = boost::get(EdgeInfoPropertyTag(), seed.tmplt, e);
-                   return (v == ei.v1 && dir == ei.d1) || (v == ei.v2 && dir == ei.d2);
+                   return (v == ei.v1 && dir == ei.d1 && seed.unvisited[ei.v2]) ||
+                          (v == ei.v2 && dir == ei.d2 && seed.unvisited[ei.v1]);
                 });
                 if (iter != eEnd) {
                     // Carve the edge, and extend.
