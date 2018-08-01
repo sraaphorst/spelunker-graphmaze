@@ -6,7 +6,19 @@
 
 #pragma once
 
-namespace spelunker::graphmaze {
+namespace spelunker::types {
+    /**
+     * Tessellation type, used for graph rendering.
+     */
+    enum class TessellationType {
+        GRID,
+        CIRCULAR,
+        SPHERICAL,
+        DELTA,
+        OMEGA,
+        OCTAGONAL
+    };
+
     /**
      * Octagonal tessellation, with diamonds at diagonals to the octagons.
      * See: https://cdn.printablepaper.net/samples/octagon-portrait-letter-1.png

@@ -25,7 +25,7 @@ namespace spelunker::graphmaze {
         MazeSeed seed = GraphUtils::makeSeed(tmplt);
 
         // Make sure that we have a binary tree function, which is needed to pick carving directions.
-        auto directionFnOpt = GraphUtils::getCandidateFunction(seed);
+        auto directionFnOpt = GraphUtils::getCandidateFunction(tmplt);
         if (!directionFnOpt.has_value())
             throw types::UnsupportedMazeGeneration();
         auto directionFn = directionFnOpt.value();

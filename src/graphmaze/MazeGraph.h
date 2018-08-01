@@ -20,6 +20,7 @@
 
 #include <typeclasses/Show.h>
 #include <types/Direction.h>
+#include <types/Tessellations.h>
 
 namespace spelunker::graphmaze {
     /**
@@ -101,12 +102,11 @@ namespace spelunker::graphmaze {
      using BTCandidateFunction = std::function<std::deque<types::Direction>(int)>;
      struct GraphInfo {
          GraphInfo() {}
-         GraphInfo(const BTCandidateFunction &binaryTreeCandidates,
-                   const GridRankerMap &gridRankerMap)
-            : binaryTreeCandidates{binaryTreeCandidates},
-              gridRankerMap{gridRankerMap} {};
 
-         std::optional<GridRankerMap> gridRankerMap;
+         std::optional<size_t> width;
+         std::optional<size_t> height;
+         types::TessellationType type;
+         std::vector<GridRankerMap> gridRankerMaps;
          std::optional<BTCandidateFunction> binaryTreeCandidates;
      };
 

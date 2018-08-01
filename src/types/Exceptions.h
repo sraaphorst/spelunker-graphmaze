@@ -67,4 +67,10 @@ namespace spelunker::types {
     public:
         UnsupportedTemplateGeneration() : Exception("Illegal template generation operation attempted.") {}
     };
+
+    /// Thrown if the user tries to invoke a rendering with the wrong type of graph.
+    class UnsupportedRendering : public Exception {
+    public:
+        UnsupportedRendering() : Exception("Illegal rendering operation attempted.") {}
+    };
 }

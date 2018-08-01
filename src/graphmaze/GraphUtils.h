@@ -207,10 +207,25 @@ namespace spelunker::graphmaze {
          * Get the candidate function in the graph used by the binary tree and sidewinder
          * algorithms to dictate directions at cells. This is an optional parameter, so
          * none is returned if it does not exist.
-         * @param seed the maze seed
+         * @param graph the grapg
          * @return the function as an optional
          */
-        static std::optional<BTCandidateFunction> getCandidateFunction(const MazeSeed &seed);
+        static const std::optional<BTCandidateFunction> &getCandidateFunction(const MazeGraph &graph);
+
+        /**
+         * Get the ranker functions in the graph, used for rendering.
+         * The ith ranker function relates to the ith vector type.
+         * @param graph the graph
+         * @return a collection of the ranker functions
+         */
+        static const std::vector<GridRankerMap> &getRankerFunctions(const MazeGraph &graph);
+
+        /**
+         * Get the entire graph info.
+         * @param graph the graph
+         * @return the graph info
+         */
+         static const GraphInfo &getGraphInfo(const MazeGraph &graph);
 
     private:
         /**
