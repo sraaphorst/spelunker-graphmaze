@@ -100,19 +100,14 @@ namespace spelunker::graphmaze {
       */
      using BTCandidateFunction = std::function<std::deque<types::Direction>(int)>;
      struct GraphInfo {
-         GraphInfo(const bool isOrthogonal,
-                 const BTCandidateFunction &binaryTreeCandidates,
-                 const GridRankerMap &gridRankerMap)
-            : isOrthogonal{isOrthogonal},
-              binaryTreeCandidates{binaryTreeCandidates},
+         GraphInfo() {}
+         GraphInfo(const BTCandidateFunction &binaryTreeCandidates,
+                   const GridRankerMap &gridRankerMap)
+            : binaryTreeCandidates{binaryTreeCandidates},
               gridRankerMap{gridRankerMap} {};
-
-         explicit GraphInfo(const bool isOrthogonal = false)
-            : isOrthogonal(isOrthogonal), binaryTreeCandidates{} {}
 
          std::optional<GridRankerMap> gridRankerMap;
          std::optional<BTCandidateFunction> binaryTreeCandidates;
-         const bool isOrthogonal;
      };
 
     /// A collection of vertices.

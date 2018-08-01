@@ -69,10 +69,7 @@ namespace spelunker::graphmaze {
                 [](const auto &r, const auto &s) { return r.size() < s.size(); })->size();
         std::for_each(cells.begin(), cells.end(), [maxwidth](auto &r) { r.resize(maxwidth, false); });
 
-        const auto binaryTreeFunc = [](int) {
-            return std::deque<types::Direction>{ types::Direction::EAST, types::Direction::SOUTH };
-        };
-        MazeGraph g{GraphInfo{true, binaryTreeFunc, {}}};
+        MazeGraph g;
 
         GridRankerMap ranker;
         for (auto y = 0; y < cells.size(); ++y) {
@@ -98,7 +95,11 @@ namespace spelunker::graphmaze {
             }
         }
 
-        g.m_property.get()->m_value.gridRankerMap = ranker;
+        const auto binaryTreeFunction = [](int) {
+            return std::deque<types::Direction>{types::Direction::EAST, types::Direction::SOUTH};
+        };
+
+        boost::set_property(g, GraphInfoPropertyTag(), GraphInfo{binaryTreeFunction, ranker});
         return g;
     }
 
@@ -106,11 +107,8 @@ namespace spelunker::graphmaze {
         // Calculate the ring sizes and create the binary tree function, which
         // always allows us to carve OUT and CLOCKWISE.
         const auto ringSizes = calculateRingSizes(radius);
-        const auto circularFunction = [](int) {
-            return std::deque<types::Direction>{types::Direction::CLOCKWISE, types::Direction::OUT};
-        };
 
-        MazeGraph g{GraphInfo{false, circularFunction, {}}};
+        MazeGraph g;
 
         // We still want a map from row x column to vertex number, i.e. a ranking function, but more complex
         // (ha) than in the case of anything grid-like, so we just use a map.
@@ -145,7 +143,12 @@ namespace spelunker::graphmaze {
                 boost::add_edge(v, vp, eip, g);
             }
         }
-        g.m_property.get()->m_value.gridRankerMap = ranker;
+
+        const auto circularFunction = [](int) {
+            return std::deque<types::Direction>{types::Direction::CLOCKWISE, types::Direction::OUT};
+        };
+
+        boost::set_property(g, GraphInfoPropertyTag(), GraphInfo{circularFunction, ranker});
         return g;
     }
 
@@ -161,12 +164,7 @@ namespace spelunker::graphmaze {
         const auto northernRows = diameter / 2 + diameter % 2;
         const auto ringSizes = calculateRingSizes(northernRows);
 
-        // The binary tree spherical function allows us to always carve east and south.
-        const auto sphericalFunction = [](int) {
-            return std::deque<types::Direction>{types::Direction::EAST, types::Direction::SOUTH};
-        };
-
-        MazeGraph g{GraphInfo{false, sphericalFunction, {}}};
+        MazeGraph g;
 
         // We still want a map from row x column to vertex number, i.e. a ranking function, but more complex
         // (ha) than in the case of anything grid-like, so we just use a map.
@@ -247,7 +245,12 @@ namespace spelunker::graphmaze {
         }
         assert(curRow == diameter);
 
-        g.m_property.get()->m_value.gridRankerMap = ranker;
+        // The binary tree spherical function allows us to always carve east and south.
+        const auto sphericalFunction = [](int) {
+            return std::deque<types::Direction>{types::Direction::EAST, types::Direction::SOUTH};
+        };
+
+        boost::set_property(g, GraphInfoPropertyTag(), GraphInfo{sphericalFunction, ranker});
         return g;
     }
 
@@ -319,8 +322,7 @@ namespace spelunker::graphmaze {
     }
 
     std::optional<BTCandidateFunction> GraphUtils::getCandidateFunction(const MazeSeed &seed) {
-        // TODO: There has to be a nicer way to access this, but I don't know what it is.
-        return seed.tmplt.m_property.get()->m_value.binaryTreeCandidates;
+        return boost::get_property(seed.tmplt, GraphInfoPropertyTag()).binaryTreeCandidates;
     }
 
     VertexCollection GraphUtils::nbrs(const MazeSeed &seed, const vertex &v, const bool visited) {
@@ -360,7 +362,8 @@ namespace spelunker::graphmaze {
         const auto binaryTreeFunc = [](int) {
             return std::deque<types::Direction>{ types::Direction::EAST, types::Direction::SOUTH };
         };
-        MazeGraph g{GraphInfo{true, binaryTreeFunc, {}}};
+
+        MazeGraph g;
 
         GridRankerMap ranker;
         for (auto y = 0; y < height; ++y)
@@ -408,7 +411,8 @@ namespace spelunker::graphmaze {
                 boost::add_edge(v1, v2, ei, g);
             }
         }
-        g.m_property.get()->m_value.gridRankerMap = ranker;
+
+        boost::set_property(g, GraphInfoPropertyTag(), GraphInfo{binaryTreeFunc, ranker});
         return g;
     }
 
@@ -419,19 +423,7 @@ namespace spelunker::graphmaze {
             || yorientation == types::AxialOrientation::REVERSE_LOOPED)
             throw types::UnsupportedTemplateGeneration{};
 
-        // In the binary tree func, 0 is an octagon, and 1 is a diamond.
-        const auto binaryTreeFunc = [](int type) {
-            switch (type) {
-                case 0:
-                    return std::deque<types::Direction>{types::Direction::EAST, types::Direction::SOUTHEAST};
-                case 1:
-                    return std::deque<types::Direction>{types::Direction::SOUTHEAST};
-                default:
-                    return std::deque<types::Direction>{};
-            }
-        };
-
-        MazeGraph g{GraphInfo{true, binaryTreeFunc, {}}};
+        MazeGraph g;
         GridRankerMap octagonalRanker;
         GridRankerMap diamondRanker;
 
@@ -501,6 +493,30 @@ namespace spelunker::graphmaze {
                 EdgeInfo eise{v, types::Direction::SOUTHEAST, vse, types::Direction::NORTHWEST};
             }
 
+        // In the binary tree func, 0 is an octagon, and 1 is a diamond.
+        const auto binaryTreeFunction = [](int type) {
+            switch (type) {
+                case 0:
+                    return std::deque<types::Direction>{types::Direction::EAST, types::Direction::SOUTHEAST};
+                case 1:
+                    return std::deque<types::Direction>{types::Direction::SOUTHEAST};
+                default:
+                    return std::deque<types::Direction>{};
+            }
+        };
+
+        // Merge the two rankers.
+        // TODO: There must be a better way to do this. It is hardly ideal to have the diamond rankers after
+        // the octagonal ones.
+        GridRankerMap ranker;
+        for (auto y = 0; y < height; ++y)
+            for (auto x = 0; x < width; ++x)
+                ranker[{x, y}] = octagonalRanker[{x, y}];
+        for (auto y = 0; y < diamondHeight; ++y)
+            for (auto x = 0; x < diamondWidth; ++x)
+                ranker[{x + width, y + height}] = diamondRanker[{x, y}];
+
+        boost::set_property(g, GraphInfoPropertyTag(), GraphInfo{binaryTreeFunction, ranker});
         return g;
     }
 
