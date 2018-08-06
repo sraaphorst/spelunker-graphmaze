@@ -6,12 +6,13 @@
 
 #pragma once
 
+#include <array>
 #include <ostream>
 #include <string>
-#include <vector>
 
 #include <types/Direction.h>
 #include "MazeGraph.h"
+using namespace std::string_view_literals;
 
 namespace spelunker::graphmaze {
     /// A simple maze renderer to an ostream.
@@ -33,7 +34,7 @@ namespace spelunker::graphmaze {
         static bool wall(const MazeGraph &m, int x, int y, int w, int h, types::Direction d);
 
         /// The characters used in the box form of the maze representation. There has to be a better way to do this.
-        static const std::vector<std::string> boxchars;
+        static constexpr std::array<std::string_view, 16> boxchars = { " "sv,"╶"sv,"╷"sv,"┌"sv,"╴"sv,"─"sv,"┐"sv,"┬"sv,"╵"sv,"└"sv,"│"sv,"├"sv,"┘"sv,"┴"sv,"┤"sv,"┼"sv };
     };
 }
 

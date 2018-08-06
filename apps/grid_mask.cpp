@@ -1,4 +1,4 @@
-/**
+ /**
  * grid_mask.cpp
  *
  * By Sebastian Raaphorst, 2018.

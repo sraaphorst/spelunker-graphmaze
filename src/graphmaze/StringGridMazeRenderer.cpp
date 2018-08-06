@@ -6,16 +6,16 @@
 
 #include <boost/graph/adjacency_list.hpp>
 
+#include <array>
 #include <ostream>
 #include <string>
 #include <vector>
 
 #include "MazeGraph.h"
 #include "StringGridMazeRenderer.h"
+using namespace std::string_view_literals;
 
 namespace spelunker::graphmaze {
-    const std::vector<std::string> StringGridMazeRenderer::boxchars = { " ","╶","╷","┌","╴","─","┐","┬","╵","└","│","├","┘","┴","┤","┼" };
-
     StringGridMazeRenderer::StringGridMazeRenderer(std::ostream &o) : out(o) {}
 
     bool StringGridMazeRenderer::wall(const MazeGraph &m, int x, int y, int w, int h, types::Direction d) {
