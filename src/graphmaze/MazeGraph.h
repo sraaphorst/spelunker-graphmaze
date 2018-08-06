@@ -20,6 +20,7 @@
 
 #include <typeclasses/Show.h>
 #include <types/Direction.h>
+#include <types/Tessellations.h>
 
 namespace spelunker::graphmaze {
     /**
@@ -100,19 +101,13 @@ namespace spelunker::graphmaze {
       */
      using BTCandidateFunction = std::function<std::deque<types::Direction>(int)>;
      struct GraphInfo {
-         GraphInfo(const bool isOrthogonal,
-                 const BTCandidateFunction &binaryTreeCandidates,
-                 const GridRankerMap &gridRankerMap)
-            : isOrthogonal{isOrthogonal},
-              binaryTreeCandidates{binaryTreeCandidates},
-              gridRankerMap{gridRankerMap} {};
+         GraphInfo() {}
 
-         explicit GraphInfo(const bool isOrthogonal = false)
-            : isOrthogonal(isOrthogonal), binaryTreeCandidates{} {}
-
-         std::optional<GridRankerMap> gridRankerMap;
+         std::optional<size_t> width;
+         std::optional<size_t> height;
+         types::TessellationType type;
+         std::vector<GridRankerMap> gridRankerMaps;
          std::optional<BTCandidateFunction> binaryTreeCandidates;
-         const bool isOrthogonal;
      };
 
     /// A collection of vertices.

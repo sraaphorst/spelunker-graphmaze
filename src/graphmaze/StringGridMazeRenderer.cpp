@@ -11,6 +11,10 @@
 #include <string>
 #include <vector>
 
+#include <types/Exceptions.h>
+#include <types/Tessellations.h>
+
+#include "GraphUtils.h"
 #include "MazeGraph.h"
 #include "StringGridMazeRenderer.h"
 using namespace std::string_view_literals;
@@ -19,10 +23,12 @@ namespace spelunker::graphmaze {
     StringGridMazeRenderer::StringGridMazeRenderer(std::ostream &o) : out(o) {}
 
     bool StringGridMazeRenderer::wall(const MazeGraph &m, int x, int y, int w, int h, types::Direction d) {
+        const GraphInfo &info = GraphUtils::getGraphInfo(m);
+
         if (x < 0 || x >= w) return false;
         if (y < 0 || y >= h) return false;
 
-        const auto &ranker = m.m_property.get()->m_value.gridRankerMap.value();
+        const auto &ranker  = info.gridRankerMaps.front();
         const auto iter = ranker.find({x,y});
         if (iter == ranker.end()) return false;
 
@@ -53,18 +59,25 @@ namespace spelunker::graphmaze {
          * 3. B(x,y,S) = M(x-1, y,   E) || M(  x,   y, W)
          * 4. B(x,y,E) = M(  x, y-1, S) || M(  x,   y, N)
          */
-        const auto &ranker = m.m_property.get()->m_value.gridRankerMap.value();
-
-        // Calculate the width and height.
-        int w = 0;
-        int h = 0;
-        for (auto iter = ranker.begin(); iter != ranker.end(); ++iter) {
-            const auto [ix, iy] = iter->first;
-            if (ix > w) w = ix;
-            if (iy > h) h = iy;
-        }
-        ++w;
-        ++h;
+//        const auto &rankers = GraphUtils::getRankerFunctions(m);
+//        const auto &ranker  = rankers.front();
+//
+//        // Calculate the width and height.
+//        // TODO: Change to the graph properties.
+//        int w = 0;
+//        int h = 0;
+//        for (auto iter = ranker.begin(); iter != ranker.end(); ++iter) {
+//            const auto [ix, iy] = iter->first;
+//            if (ix > w) w = ix;
+//            if (iy > h) h = iy;
+//        }
+//        ++w;
+//        ++h;
+        const GraphInfo &info = GraphUtils::getGraphInfo(m);
+        if (info.type != types::TessellationType::GRID)
+            throw types::UnsupportedRendering();
+        const int w = info.width.value();
+        const int h = info.height.value();
 
         // Create the box representation of the maze.
         using BoxEntry = std::vector<bool>;
