@@ -11,19 +11,20 @@ namespace spelunker::types {
      * Tessellation type, used for graph rendering.
      */
     enum class TessellationType {
-        GRID,
+        ORTHOGONAL,
+        ZETA,
         CIRCULAR,
         SPHERICAL,
         DELTA,
         OMEGA,
-        OCTAGONAL
+        UPSILON
     };
 
     /**
-     * Octagonal tessellation, with diamonds at diagonals to the octagons.
+     * Upsilon tessellation, with diamonds at diagonals to the octagons.
      * See: https://cdn.printablepaper.net/samples/octagon-portrait-letter-1.png
      */
-    enum class OctagonalTessellation {
+    enum class UpsilonTessellation {
         OCTAGON = 0,
         DIAMOND = 1,
     };
