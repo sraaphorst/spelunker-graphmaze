@@ -15,7 +15,7 @@ namespace spelunker::graphmaze {
         PrimMazeGenerator() = default;
         virtual ~PrimMazeGenerator() final = default;
 
-        const MazeGraph generate(const MazeGraph &tmplt) const final;
+        virtual std::pair<const MazeGraph, const vertex> generate(const MazeGraph &tmplt) const final;
     };
 }
 

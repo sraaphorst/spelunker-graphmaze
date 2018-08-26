@@ -5,6 +5,7 @@
  */
 
 #include <algorithm>
+#include <tuple>
 #include <vector>
 
 #include <math/RNG.h>
@@ -15,7 +16,7 @@
 #include "PrimMazeGenerator.h"
 
 namespace spelunker::graphmaze {
-    const MazeGraph PrimMazeGenerator::generate(const MazeGraph &tmplt) const {
+    std::pair<const MazeGraph, const vertex> PrimMazeGenerator::generate(const MazeGraph &tmplt) const {
         auto seed = GraphUtils::makeSeed(tmplt);
 
         std::vector<vertex> processing;
@@ -47,6 +48,6 @@ namespace spelunker::graphmaze {
             processing.emplace_back(u);
         }
 
-        return seed.maze;
+        return {seed.maze, start};
     }
 }

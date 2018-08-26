@@ -19,7 +19,7 @@ constexpr auto R = 3;
 
 int main() {
     const auto grid = GraphUtils::makeGrid(W, H);
-    const auto maze = HuntAndKillMazeGenerator{}.generate(grid);
+    const auto [maze, start] = HuntAndKillMazeGenerator{}.generate(grid);
     GraphUtils::outputGraph(std::cout, maze);
 
     StringGridMazeRenderer r{std::cout};

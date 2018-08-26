@@ -18,7 +18,7 @@ constexpr auto H = 50;
 
 int main() {
     const auto torus = GraphUtils::makeTorus(W, H);
-    const auto maze = BFSMazeGenerator{}.generate(torus);
+    const auto [maze, start] = BFSMazeGenerator{}.generate(torus);
     GraphUtils::outputGraph(std::cout, maze);
 
     StringGridMazeRenderer r{std::cout};

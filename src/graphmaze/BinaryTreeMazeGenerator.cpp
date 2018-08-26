@@ -4,8 +4,10 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include <deque>
+#include <tuple>
 #include <vector>
+
+#include <boost/graph/adjacency_list.hpp>
 
 #include <math/RNG.h>
 #include <types/Exceptions.h>
@@ -17,8 +19,8 @@
 
 namespace spelunker::graphmaze {
 
-    const MazeGraph BinaryTreeMazeGenerator::generate(const MazeGraph &tmplt) const {
-        MazeSeed seed = GraphUtils::makeSeed(tmplt);
+    std::pair<const MazeGraph, const vertex> BinaryTreeMazeGenerator::generate(const MazeGraph &tmplt) const {
+        auto seed = GraphUtils::makeSeed(tmplt);
 
         // Make sure that we have a binary tree function, which is needed to pick carving directions.
         auto directionFnOpt = GraphUtils::getCandidateFunction(seed.tmplt);
@@ -28,8 +30,9 @@ namespace spelunker::graphmaze {
 
         // Start at vertex 0 and just keep carving, forcing carving into new
         // cells.
-        for (vertex v = 0; v < seed.numVertices; ++v) {
+        for (auto [vPtr, vEnd] = boost::vertices(tmplt); vPtr != vEnd; ++vPtr) {
             // Get the vertex type.
+            const auto v = *vPtr;
             const auto vi = boost::get(VertexInfoPropertyTag(), tmplt, v);
 
             // Get a list of directions in which we can carve and filter that to get a list of unvisited vertices
@@ -59,6 +62,6 @@ namespace spelunker::graphmaze {
             }
         }
 
-        return seed.maze;
+        return {seed.maze, *boost::vertices(seed.maze).first};
     }
 }

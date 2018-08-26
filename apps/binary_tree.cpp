@@ -17,6 +17,6 @@ constexpr auto R = 21;
 
 int main() {
     const auto circ = GraphUtils::makeSpherical(R);
-    const auto cmaze = BinaryTreeMazeGenerator{}.generate(circ);
-    GraphUtils::outputGraph(std::cout, cmaze);
+    const auto [maze, start] = BinaryTreeMazeGenerator{}.generate(circ);
+    GraphUtils::outputGraph(std::cout, maze);
 }

@@ -4,6 +4,8 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <tuple>
+
 #include <math/RNG.h>
 
 #include "GraphUtils.h"
@@ -12,11 +14,12 @@
 
 namespace spelunker::graphmaze {
 
-    const MazeGraph HuntAndKillMazeGenerator::generate(const MazeGraph &tmplt) const {
-        MazeSeed seed = GraphUtils::makeSeed(tmplt);
+    std::pair<const MazeGraph, const vertex> HuntAndKillMazeGenerator::generate(const MazeGraph &tmplt) const {
+        auto seed = GraphUtils::makeSeed(tmplt);
 
         // Get a random starting cell.
-        vertex v = GraphUtils::randomStartVertex(seed.maze);
+        const auto start = GraphUtils::randomStartVertex(seed.maze);
+        auto v = start;
 
         // Allow the first iteration to start without a visited neighbour.
         bool firstRun = true;
@@ -62,6 +65,6 @@ namespace spelunker::graphmaze {
         }
 
         // Now we have covered all vertices and added them to the maze.
-        return seed.maze;
+        return {seed.maze, start};
     }
 }

@@ -17,7 +17,7 @@ constexpr auto H = 50;
 
 int main() {
     MazeGraph grid = GraphUtils::makeSpherical(11);
-    const auto maze = SidewinderMazeGenerator{}.generate(grid);
+    const auto [maze, start] = SidewinderMazeGenerator{}.generate(grid);
     GraphUtils::outputGraph(std::cout, maze);
 
     //StringGridMazeRenderer r{std::cout};

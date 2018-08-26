@@ -18,7 +18,7 @@ constexpr auto H = 50;
 
 int main() {
     const auto grid = GraphUtils::makeKleinBottle(W, H);
-    const auto maze = AldousBroderMazeGenerator{}.generate(grid);
+    const auto [maze, start] = AldousBroderMazeGenerator{}.generate(grid);
     GraphUtils::outputGraph(std::cout, maze);
 
     StringGridMazeRenderer r{std::cout};

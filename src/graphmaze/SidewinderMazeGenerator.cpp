@@ -5,6 +5,7 @@
  */
 
 #include <deque>
+#include <tuple>
 #include <vector>
 
 #include <math/RNG.h>
@@ -20,8 +21,8 @@ namespace spelunker::graphmaze {
     SidewinderMazeGenerator::SidewinderMazeGenerator(double probability)
         : probability{probability} {}
 
-    const MazeGraph SidewinderMazeGenerator::generate(const MazeGraph &tmplt) const {
-        MazeSeed seed = GraphUtils::makeSeed(tmplt);
+    std::pair<const MazeGraph, const vertex> SidewinderMazeGenerator::generate(const MazeGraph &tmplt) const {
+        auto seed = GraphUtils::makeSeed(tmplt);
 
         // Make sure that we have a binary tree function, which is needed to pick carving directions.
         auto directionFnOpt = GraphUtils::getCandidateFunction(tmplt);
@@ -118,6 +119,6 @@ namespace spelunker::graphmaze {
             run.clear();
             ++v;
         }
-        return seed.maze;
+        return {seed.maze, *boost::vertices(seed.maze).first};
     }
 }

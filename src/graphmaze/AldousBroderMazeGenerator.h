@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <tuple>
+
 #include "MazeGenerator.h"
 #include "MazeGraph.h"
 
@@ -16,7 +18,7 @@ namespace spelunker::graphmaze {
         AldousBroderMazeGenerator() = default;
         virtual ~AldousBroderMazeGenerator() final = default;
 
-        const MazeGraph generate(const MazeGraph &tmplt) const;
+        virtual std::pair<const MazeGraph, const vertex> generate(const MazeGraph &tmplt) const final;
     };
 }
 

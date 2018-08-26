@@ -17,6 +17,6 @@ constexpr auto H = 7;
 
 int main() {
     const auto grid = GraphUtils::makeOctagonalGrid(W, H);
-    const auto maze = AldousBroderMazeGenerator{}.generate(grid);
+    const auto [maze, start] = AldousBroderMazeGenerator{}.generate(grid);
     GraphUtils::outputGraph(std::cout, maze);
 }

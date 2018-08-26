@@ -5,6 +5,7 @@
  */
 
 #include <queue>
+#include <tuple>
 
 #include <math/RNG.h>
 
@@ -15,7 +16,7 @@
 
 namespace spelunker::graphmaze {
 
-    const MazeGraph BFSMazeGenerator::generate(const MazeGraph &tmplt) const {
+    std::pair<const MazeGraph, const vertex> BFSMazeGenerator::generate(const MazeGraph &tmplt) const {
         auto seed = GraphUtils::makeSeed(tmplt);
 
         std::queue<vertex> queue;
@@ -51,6 +52,6 @@ namespace spelunker::graphmaze {
                 queue.emplace(nbr);
         }
 
-        return seed.maze;
+        return {seed.maze, start};
     }
 }

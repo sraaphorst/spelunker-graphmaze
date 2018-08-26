@@ -15,32 +15,33 @@
 
 namespace spelunker::graphmaze {
 
-    const MazeGraph DFSMazeGenerator::generate(const MazeGraph &tmplt) const {
-        MazeSeed seed = GraphUtils::makeSeed(tmplt);
+    std::pair<const MazeGraph, const vertex> DFSMazeGenerator::generate(const MazeGraph &tmplt) const {
+        auto seed = GraphUtils::makeSeed(tmplt);
 
         std::stack<vertex> stack;
-        stack.push(GraphUtils::randomStartVertex(seed.maze));
+        const auto start = GraphUtils::randomStartVertex(seed.maze);
+        stack.push(start);
         while (!stack.empty()) {
-            const auto start = stack.top();
-            seed.unvisited[start] = false;
+            const auto v = stack.top();
+            seed.unvisited[v] = false;
 
             // Find the list of unvisited neighbours to start.
-            const auto uNbrs = GraphUtils::unvisitedNeighbours(seed, start);
+            const auto uNbrs = GraphUtils::unvisitedNeighbours(seed, v);
             if (uNbrs.empty()) {
                 stack.pop();
                 continue;
             }
 
             // Select an unvisited neighbour at random.
-            const auto nxt = math::RNG::randomElement(uNbrs);
+            const auto u = math::RNG::randomElement(uNbrs);
 
             // Add the wall from start to nxt to the output maze.
-            GraphUtils::addEdge(start, nxt, seed);
+            GraphUtils::addEdge(v, u, seed);
 
             // Enqueue nxt and loop.
-            stack.push(nxt);
+            stack.push(u);
         }
 
-        return seed.maze;
+        return {seed.maze, start};
     }
 }

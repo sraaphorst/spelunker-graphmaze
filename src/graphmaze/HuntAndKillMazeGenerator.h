@@ -16,7 +16,7 @@ namespace spelunker::graphmaze {
         HuntAndKillMazeGenerator() = default;
         virtual ~HuntAndKillMazeGenerator() final = default;
 
-        const MazeGraph generate(const MazeGraph &tmplt) const final;
+        virtual std::pair<const MazeGraph, const vertex> generate(const MazeGraph &tmplt) const final;
     };
 }
 

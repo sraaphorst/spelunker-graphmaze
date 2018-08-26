@@ -33,7 +33,7 @@ int main() {
     //const auto maze = BinaryTreeMazeGenerator{}.generate(graph);
     //const auto maze = DFSMazeGenerator{}.generate(graph);
     //const auto maze = HuntAndKillMazeGenerator{}.generate(graph);
-    const auto maze = SidewinderMazeGenerator{}.generate(graph);
+     const auto [maze, start] = SidewinderMazeGenerator{}.generate(graph);
 
     StringGridMazeRenderer r{std::cout};
     r.render(maze);

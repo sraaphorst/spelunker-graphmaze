@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include <tuple>
+
 #include "MazeGenerator.h"
 #include "MazeGraph.h"
 
@@ -26,7 +28,7 @@ namespace spelunker::graphmaze {
         BinaryTreeMazeGenerator() = default;
         virtual ~BinaryTreeMazeGenerator() final = default;
 
-        const MazeGraph generate(const MazeGraph &tmplt) const;
+        virtual std::pair<const MazeGraph, const vertex> generate(const MazeGraph &tmplt) const final;
     };
 }
 

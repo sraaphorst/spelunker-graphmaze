@@ -4,6 +4,8 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <tuple>
+
 #include <math/RNG.h>
 
 #include "GraphUtils.h"
@@ -13,11 +15,12 @@
 
 namespace spelunker::graphmaze {
 
-    const MazeGraph AldousBroderMazeGenerator::generate(const MazeGraph &tmplt) const {
-        MazeSeed seed = GraphUtils::makeSeed(tmplt);
+    std::pair<const MazeGraph, const vertex> AldousBroderMazeGenerator::generate(const MazeGraph &tmplt) const {
+        auto seed = GraphUtils::makeSeed(tmplt);
 
         // Pick a random vertex to start.
-        auto v = GraphUtils::randomStartVertex(seed.maze);
+        const auto start = GraphUtils::randomStartVertex(seed.maze);
+        auto v = start;
         auto visitedCells = 1;
         seed.unvisited[v] = false;
 
@@ -37,6 +40,6 @@ namespace spelunker::graphmaze {
             v = nxt;
         }
 
-        return seed.maze;
+        return {seed.maze, start};
     }
 }
