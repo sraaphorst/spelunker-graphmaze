@@ -25,7 +25,7 @@ namespace spelunker::graphmaze {
     class SidewinderMazeGenerator final : public MazeGenerator {
     public:
         SidewinderMazeGenerator(double probability = 0.5);
-        ~SidewinderMazeGenerator() = default;
+        virtual ~SidewinderMazeGenerator() final = default;
 
         const MazeGraph generate(const MazeGraph &tmplt) const;
 

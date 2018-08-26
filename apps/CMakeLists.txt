@@ -26,3 +26,6 @@ target_link_libraries(sidewinder LINK_PUBLIC spelunker_graphmaze)
 
 add_executable(octagonal octagonal.cpp)
 target_link_libraries(octagonal LINK_PUBLIC spelunker_graphmaze)
+
+add_executable(prim prim.cpp)
+target_link_libraries(prim LINK_PUBLIC spelunker_graphmaze)

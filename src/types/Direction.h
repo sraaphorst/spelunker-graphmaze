@@ -17,24 +17,27 @@
 
 namespace spelunker::types {
     /**
-     * The four possible directions in the mazes we consider.
+     * The list of possible directions we consider.
+     * The directions are primarily used in binary tree, sidewinder, and Eller's maze.
      */
     enum class Direction {
-        NORTH            =              0b1,
-        EAST             =             0b10,
-        SOUTH            =            0b100,
-        WEST             =           0b1000,
-        NORTHEAST        =          0b10000,
-        SOUTHEAST        =         0b100000,
-        SOUTHWEST        =        0b1000000,
-        NORTHWEST        =       0b10000000,
-        UP               =      0b100000000,
-        DOWN             =     0b1000000000,
+        // These are for grid and spherical mazes.
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST,
+        NORTHEAST,
+        SOUTHEAST,
+        SOUTHWEST,
+        NORTHWEST,
+        UP,
+        DOWN,
         // These are for circular mazes
-        CLOCKWISE        =    0b10000000000,
-        COUNTERCLOCKWISE =   0b100000000000,
-        OUT              =  0b1000000000000,
-        IN               = 0b10000000000000,
+        CLOCKWISE,
+        COUNTERCLOCKWISE,
+        OUT,
+        IN,
+
     };
 
     /// Function to serialize a Direction.

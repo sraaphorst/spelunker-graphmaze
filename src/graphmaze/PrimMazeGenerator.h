@@ -1,5 +1,5 @@
 /**
- * BFSMazeGenerator.h
+ * PrimMazeGenerator.h
  *
  * By Sebastian Raaphorst, 2018.
  */
@@ -10,14 +10,14 @@
 #include "MazeGraph.h"
 
 namespace spelunker::graphmaze {
-
-    class BFSMazeGenerator final : public MazeGenerator{
+    class PrimMazeGenerator final : public MazeGenerator {
     public:
-        BFSMazeGenerator() = default;
-        virtual ~BFSMazeGenerator() final = default;
+        PrimMazeGenerator() = default;
+        virtual ~PrimMazeGenerator() final = default;
 
         const MazeGraph generate(const MazeGraph &tmplt) const final;
     };
 }
+
 
 

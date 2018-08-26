@@ -24,7 +24,7 @@ namespace spelunker::graphmaze {
     class BinaryTreeMazeGenerator final : public MazeGenerator {
     public:
         BinaryTreeMazeGenerator() = default;
-        ~BinaryTreeMazeGenerator() = default;
+        virtual ~BinaryTreeMazeGenerator() final = default;
 
         const MazeGraph generate(const MazeGraph &tmplt) const;
     };

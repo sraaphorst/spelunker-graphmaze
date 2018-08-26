@@ -54,6 +54,10 @@ namespace spelunker::types {
                                       Direction::NORTHWEST,
                                       Direction::UP,
                                       Direction::DOWN,
+                                      Direction::CLOCKWISE,
+                                      Direction::COUNTERCLOCKWISE,
+                                      Direction::OUT,
+                                      Direction::IN
         };
     }
 

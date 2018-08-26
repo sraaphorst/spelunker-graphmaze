@@ -14,7 +14,7 @@ namespace spelunker::graphmaze {
     class HuntAndKillMazeGenerator final : public MazeGenerator {
     public:
         HuntAndKillMazeGenerator() = default;
-        ~HuntAndKillMazeGenerator() = default;
+        virtual ~HuntAndKillMazeGenerator() final = default;
 
         const MazeGraph generate(const MazeGraph &tmplt) const final;
     };

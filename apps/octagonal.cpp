@@ -4,14 +4,10 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include <cassert>
 #include <iostream>
-#include <tuple>
-#include <vector>
 
 #include <graphmaze/GraphUtils.h>
 #include <graphmaze/MazeGraph.h>
-#include <graphmaze/MazeGenerator.h>
 #include <graphmaze/AldousBroderMazeGenerator.h>
 
 using namespace spelunker::graphmaze;

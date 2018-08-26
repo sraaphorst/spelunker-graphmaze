@@ -17,7 +17,7 @@ namespace spelunker::graphmaze {
     class DFSMazeGenerator final : public MazeGenerator {
     public:
         DFSMazeGenerator() = default;
-        ~DFSMazeGenerator() = default;
+        virtual ~DFSMazeGenerator() final = default;
 
         const MazeGraph generate(const MazeGraph &tmplt) const final;
     };

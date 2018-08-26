@@ -4,23 +4,23 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include <cassert>
 #include <iostream>
-#include <tuple>
-#include <vector>
 
 #include <graphmaze/GraphUtils.h>
 #include <graphmaze/MazeGraph.h>
-#include <graphmaze/MazeGenerator.h>
 #include <graphmaze/DFSMazeGenerator.h>
+#include <graphmaze/StringGridMazeRenderer.h>
 
 using namespace spelunker::graphmaze;
 
 constexpr auto W = 50;
-constexpr auto H = 40;
+constexpr auto H = 50;
 
 int main() {
-    MazeGraph torus = GraphUtils::makeCylinder(W, H);
+    const auto torus = GraphUtils::makeTorus(W, H);
     const auto maze = DFSMazeGenerator{}.generate(torus);
     GraphUtils::outputGraph(std::cout, maze);
+
+    StringGridMazeRenderer r{std::cout};
+    r.render(maze);
 }

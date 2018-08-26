@@ -4,8 +4,6 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include <boost/graph/adjacency_list.hpp>
-
 #include <stack>
 
 #include <math/RNG.h>

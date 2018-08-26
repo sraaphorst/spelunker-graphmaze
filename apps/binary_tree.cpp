@@ -4,10 +4,7 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include <cassert>
 #include <iostream>
-#include <tuple>
-#include <vector>
 
 #include <graphmaze/GraphUtils.h>
 #include <graphmaze/MazeGraph.h>
