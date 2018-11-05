@@ -1,5 +1,7 @@
 # spelunker_graphmaze
 
+**Status:** In progress, temporarily on hold.
+
 An independent refactor of the https://github.com/sraaphorst/spelunker GraphMaze to make GraphMaze the fundamental maze specification unit, which will allow a much more diverse number of mazes to be built instead of having mazes constrained to grids.
 
 The maze specification is provided by a graph (using the Boost Graph Library), with vertices representing the cells, and edges representing the possible passages. This allows:
