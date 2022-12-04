@@ -1,4 +1,4 @@
-# spelunker_graphmaze
+# Spelunker Graphmaze
 
 **Status:** In progress, temporarily on hold.
 
